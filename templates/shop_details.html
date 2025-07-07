@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Details - Personalized Gifts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @keyframes pulse { 50% { opacity: .5; } }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .transition-all { transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); }
+        .bg-gradient-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-800 font-sans">
+
+<header class="bg-gradient-header shadow-lg sticky top-0 z-50 text-white">
+    <div class="max-w-6xl mx-auto flex items-center justify-between p-4">
+        <h1 class="text-xl md:text-2xl font-bold flex items-center gap-3">
+            <i class="fa-solid fa-gift"></i>
+            <span>Shop Details</span>
+        </h1>
+        <a href="/gifts" class="font-semibold hover:bg-white/20 rounded-md p-2 transition-all flex items-center gap-2 text-sm md:text-base">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Back</span>
+        </a>
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto p-4 md:p-6 space-y-8">
+
+    <div id="shopInfoContainer" class="bg-white shadow-xl rounded-2xl overflow-hidden">
+        <div id="shopInfoSkeleton" class="p-6 md:p-8">
+            <div class="flex flex-col sm:flex-row items-center gap-6">
+                <div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-200 animate-pulse flex-shrink-0"></div>
+                <div class="flex-1 space-y-4 w-full">
+                    <div class="h-8 bg-gray-200 rounded w-3/4 mx-auto sm:mx-0 animate-pulse"></div>
+                    <div class="h-5 bg-gray-200 rounded w-1/2 mx-auto sm:mx-0 animate-pulse"></div>
+                    <div class="h-12 bg-gray-200 rounded w-full animate-pulse"></div>
+                    <div class="h-5 bg-gray-200 rounded w-1/3 mx-auto sm:mx-0 animate-pulse"></div>
+                </div>
+            </div>
+        </div>
+        <div id="shopInfoContent" class="hidden">
+            <div class="p-6 md:p-8 flex flex-col sm:flex-row items-center text-center sm:text-left gap-6">
+                <img id="shopImage" src="" alt="Shop Logo" class="w-32 h-32 md:w-40 md:h-40 object-cover rounded-full border-4 border-white shadow-lg flex-shrink-0 -mt-16 sm:mt-0">
+                <div class="flex-1 space-y-3">
+                    <h2 id="shopName" class="text-3xl md:text-4xl font-extrabold text-indigo-800"></h2>
+                    <p id="shopLocation" class="text-gray-600 text-lg flex items-center justify-center sm:justify-start gap-2"><i class="fa-solid fa-map-marker-alt text-gray-400"></i><span></span></p>
+                    <p id="shopDescription" class="text-gray-700 max-w-2xl mx-auto sm:mx-0 text-base"></p>
+                    <p id="shopTimings" class="text-sm text-gray-500 flex items-center justify-center sm:justify-start gap-2"><i class="fa-solid fa-clock text-gray-400"></i><span></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-4 space-y-8">
+            <div class="bg-white shadow-xl rounded-2xl p-6">
+                <h3 class="text-xl font-bold text-indigo-800 mb-4 text-center">Connect with Us</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
+                    <a id="whatsappLink" href="#" target="_blank" class="hidden flex-col items-center justify-center p-4 bg-gray-50 rounded-lg border hover:border-green-500 hover:bg-green-50 hover:shadow-lg hover:-translate-y-1 transition-all group">
+                        <i class="fab fa-whatsapp text-4xl text-green-500"></i>
+                        <span class="mt-2 font-semibold text-gray-700 group-hover:text-green-600">WhatsApp</span>
+                    </a>
+                    <a id="instagramLink" href="#" target="_blank" class="hidden flex-col items-center justify-center p-4 bg-gray-50 rounded-lg border hover:border-pink-500 hover:bg-pink-50 hover:shadow-lg hover:-translate-y-1 transition-all group">
+                        <i class="fab fa-instagram text-4xl text-pink-500"></i>
+                        <span class="mt-2 font-semibold text-gray-700 group-hover:text-pink-600">Instagram</span>
+                    </a>
+                    <a id="websiteLink" href="#" target="_blank" class="hidden flex-col items-center justify-center p-4 bg-gray-50 rounded-lg border hover:border-blue-500 hover:bg-blue-50 hover:shadow-lg hover:-translate-y-1 transition-all group">
+                        <i class="fa-solid fa-globe text-4xl text-blue-500"></i>
+                        <span class="mt-2 font-semibold text-gray-700 group-hover:text-blue-600">Website</span>
+                    </a>
+                </div>
+            </div>
+
+            <div id="bestProductContainer" class="hidden bg-white shadow-xl rounded-2xl p-6 space-y-4">
+                <h3 class="text-xl font-bold text-amber-600 flex items-center gap-2"><i class="fa-solid fa-star text-amber-500"></i> Best Seller</h3>
+                <div class="flex items-center space-x-4">
+                    <img id="bestProductImage" src="" alt="Best Product" class="w-24 h-24 object-cover rounded-lg border-2 border-amber-300 shadow">
+                    <div class="flex-1 space-y-1">
+                        <p id="bestProductName" class="font-bold text-lg text-gray-800"></p>
+                        <p class="text-sm text-gray-600">Our most popular item!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="mapContainer" class="bg-white shadow-xl rounded-2xl overflow-hidden hidden">
+                <iframe id="shopMap" class="w-full h-72" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+
+        <div id="productsSection" class="lg:col-span-8 bg-white shadow-xl rounded-2xl p-6 md:p-8 hidden">
+            <h3 class="text-2xl font-bold text-indigo-800 mb-6">Our Products</h3>
+            <div id="productsContainer" class="grid gap-x-4 gap-y-6 grid-cols-2 md:grid-cols-3 xl:grid-cols-4"></div>
+            <p id="productsError" class="hidden text-red-500">Could not load products.</p>
+        </div>
+    </div>
+
+    <div class="bg-white shadow-xl rounded-2xl p-6 md:p-8 space-y-6">
+        <h3 class="text-2xl font-bold text-indigo-800">Customer Reviews</h3>
+        <div id="reviewsContainer" class="space-y-4"></div>
+        <p id="reviewsError" class="hidden text-red-500">Could not load reviews.</p>
+        <form id="reviewForm" class="space-y-4 border-t-2 border-gray-100 pt-6">
+            <h4 class="font-semibold text-lg text-gray-700">Leave a Review</h4>
+            <textarea id="reviewText" rows="4" placeholder="Share your experience..." class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all" required></textarea>
+            <button id="submitReviewBtn" type="submit" class="bg-indigo-600 text-white font-bold px-8 py-3 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all w-full sm:w-auto disabled:bg-indigo-400 disabled:cursor-not-allowed shadow-md hover:shadow-lg">
+                Submit Review
+            </button>
+        </form>
+    </div>
+</main>
+
+<footer class="text-center text-gray-500 py-8 mt-10">
+    &copy; 2025 AI Avatar Generator & Gift Shops. All Rights Reserved.
+</footer>
+
+<script>
+const shopId = {{ shop_id }};
+
+async function loadShop() {
+    const res = await fetch(`/api/shops/${shopId}`);
+    const shop = await res.json();
+
+    document.getElementById('shopName').textContent = shop.name;
+    document.getElementById('shopLocation').querySelector('span').textContent = shop.location;
+    document.getElementById('shopDescription').textContent = shop.description;
+    document.getElementById('shopImage').src = shop.image;
+    document.getElementById('shopTimings').querySelector('span').textContent = shop.timings;
+
+    if(shop.whatsapp) document.getElementById('whatsappLink').href = shop.whatsapp, document.getElementById('whatsappLink').classList.remove('hidden');
+    if(shop.instagram) document.getElementById('instagramLink').href = shop.instagram, document.getElementById('instagramLink').classList.remove('hidden');
+    if(shop.link) document.getElementById('websiteLink').href = shop.link, document.getElementById('websiteLink').classList.remove('hidden');
+
+    if(shop.best_product_name && shop.best_product_image) {
+        document.getElementById('bestProductName').textContent = shop.best_product_name;
+        document.getElementById('bestProductImage').src = shop.best_product_image;
+        document.getElementById('bestProductContainer').classList.remove('hidden');
+    }
+
+    if(shop.map_url) {
+        document.getElementById('shopMap').src = shop.map_url;
+        document.getElementById('mapContainer').classList.remove('hidden');
+    }
+
+    document.getElementById('shopInfoSkeleton').classList.add('hidden');
+    document.getElementById('shopInfoContent').classList.remove('hidden');
+}
+
+async function loadProducts() {
+    const res = await fetch(`/api/shops/${shopId}/products`);
+    const products = await res.json();
+
+    const container = document.getElementById('productsContainer');
+    products.forEach(p => {
+        container.insertAdjacentHTML('beforeend', `
+            <div>
+                <div class="bg-gray-50 rounded-lg overflow-hidden border group-hover:shadow-xl group-hover:-translate-y-1 transition-all">
+                    <img src="${p.image}" alt="${p.name}" class="w-full h-40 object-cover">
+                    <div class="p-4">
+                        <h4 class="font-bold text-gray-800 truncate">${p.name}</h4>
+                        <p class="text-sm text-gray-500">${p.description || ''}</p>
+                    </div>
+                </div>
+            </div>
+        `);
+    });
+
+    document.getElementById('productsSection').classList.remove('hidden');
+}
+
+async function loadReviews() {
+    const res = await fetch(`/api/reviews?shop_id=${shopId}`);
+    const reviews = await res.json();
+
+    const container = document.getElementById('reviewsContainer');
+    reviews.forEach(r => {
+        container.insertAdjacentHTML('beforeend', `
+            <div class="p-5 bg-indigo-50/50 border-l-4 border-indigo-500 rounded-r-lg">
+                <p class="text-gray-700 italic">" ${r.review} "</p>
+            </div>
+        `);
+    });
+}
+
+document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = document.getElementById('reviewText').value.trim();
+    if (!text) return;
+
+    await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shop_id: shopId, review: text })
+    });
+
+    document.getElementById('reviewText').value = '';
+    loadReviews();
+});
+
+loadShop();
+loadProducts();
+loadReviews();
+</script>
+
+</body>
+</html>

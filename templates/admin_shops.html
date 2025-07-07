@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gift Shop Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-100 p-6 space-y-6">
+
+<h1 class="text-3xl font-bold text-center text-indigo-700">🎁 Gift Shop Admin Panel</h1>
+
+<!-- Add / Edit Shop Form -->
+<div class="max-w-xl mx-auto bg-white shadow p-6 rounded-xl space-y-4">
+    <h2 class="text-xl font-semibold text-gray-700">Add or Update Gift Shop</h2>
+    <input id="shopId" type="hidden">
+    <input id="shopName" placeholder="Shop Name *" class="w-full p-3 border rounded-lg">
+    <input id="location" placeholder="Location *" class="w-full p-3 border rounded-lg">
+    <input id="contact" placeholder="Contact Number *" class="w-full p-3 border rounded-lg">
+    <input id="link" placeholder="Website or WhatsApp Link *" class="w-full p-3 border rounded-lg">
+    <input id="image" placeholder="Image URL (optional)" class="w-full p-3 border rounded-lg">
+    <input id="map" placeholder="Google Maps Embed URL (optional)" class="w-full p-3 border rounded-lg">
+    <input id="timings" placeholder="Shop Timings (optional)" class="w-full p-3 border rounded-lg">
+    <button id="saveShop" class="w-full bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700">Save Shop</button>
+</div>
+
+<!-- Shops List -->
+<div class="max-w-4xl mx-auto bg-white shadow p-6 rounded-xl mt-10 overflow-x-auto">
+    <h2 class="text-xl font-semibold text-gray-700 mb-4">Existing Shops</h2>
+    <table class="w-full table-auto text-left text-sm">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="p-2">Name</th>
+                <th class="p-2">Location</th>
+                <th class="p-2">Contact</th>
+                <th class="p-2">Link</th>
+                <th class="p-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="shopList"></tbody>
+    </table>
+</div>
+
+<!-- Product Management Section -->
+<div class="max-w-4xl mx-auto bg-white shadow p-6 rounded-xl mt-10 space-y-4">
+    <h2 class="text-xl font-semibold text-gray-700 mb-4">Manage Products for a Shop</h2>
+    <div class="grid md:grid-cols-3 gap-4">
+        <input id="productId" type="hidden">
+        <input id="productName" placeholder="Product Name *" class="p-3 border rounded-lg">
+        <input id="productImage" placeholder="Image URL *" class="p-3 border rounded-lg">
+        <input id="productDescription" placeholder="Description (optional)" class="md:col-span-3 p-3 border rounded-lg">
+    </div>
+    <select id="productShopSelect" class="w-full p-3 border rounded-lg">
+        <option value="">Select Shop *</option>
+    </select>
+    <button id="saveProduct" class="w-full bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700">Save Product</button>
+</div>
+
+<!-- Product List -->
+<div class="max-w-4xl mx-auto bg-white shadow p-6 rounded-xl mt-6 overflow-x-auto">
+    <h3 class="text-xl font-semibold text-gray-700 mb-4">Existing Products</h3>
+    <table class="w-full table-auto text-left text-sm">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="p-2">Name</th>
+                <th class="p-2">Image</th>
+                <th class="p-2">Shop</th>
+                <th class="p-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="productList"></tbody>
+    </table>
+</div>
+
+<!-- Homepage Shops Control -->
+<div class="max-w-4xl mx-auto bg-white shadow p-6 rounded-xl mt-10">
+    <h2 class="text-xl font-semibold text-gray-700 mb-4">Homepage Display Control</h2>
+    <div id="homepageShopControls" class="space-y-2"></div>
+</div>
+
+<script>
+// Shop Management
+const shopId = document.getElementById('shopId');
+const shopName = document.getElementById('shopName');
+const locationInput = document.getElementById('location');
+const contact = document.getElementById('contact');
+const link = document.getElementById('link');
+const image = document.getElementById('image');
+const map = document.getElementById('map');
+const timings = document.getElementById('timings');
+const saveShopBtn = document.getElementById('saveShop');
+const shopList = document.getElementById('shopList');
+const homepageShopControls = document.getElementById('homepageShopControls');
+
+// Product Management
+const productId = document.getElementById('productId');
+const productName = document.getElementById('productName');
+const productImage = document.getElementById('productImage');
+const productDescription = document.getElementById('productDescription');
+const productShopSelect = document.getElementById('productShopSelect');
+const saveProductBtn = document.getElementById('saveProduct');
+const productList = document.getElementById('productList');
+
+// Fetch Shops
+async function fetchShops() {
+    const res = await fetch('/api/shops');
+    const shops = await res.json();
+
+    shopList.innerHTML = shops.map(shop => `
+        <tr>
+            <td class="p-2 font-medium">${shop.name}</td>
+            <td class="p-2">${shop.location}</td>
+            <td class="p-2">${shop.contact}</td>
+            <td class="p-2"><a href="${shop.link}" target="_blank" class="text-blue-600 hover:underline">View</a></td>
+            <td class="p-2 space-x-2">
+                <button class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600" onclick="editShop(${shop.id})">Edit</button>
+                <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" onclick="deleteShop(${shop.id})">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+
+    // Populate product dropdown
+    productShopSelect.innerHTML = `<option value="">Select Shop *</option>` + shops.map(shop => `<option value="${shop.id}">${shop.name}</option>`).join('');
+
+    // Populate Homepage Control
+    homepageShopControls.innerHTML = shops.map(shop => `
+        <div class="flex items-center space-x-2">
+            <input type="checkbox" id="home-shop-${shop.id}" ${shop.show_on_homepage ? 'checked' : ''} onchange="toggleShopHomepage(${shop.id}, this.checked)">
+            <label for="home-shop-${shop.id}" class="font-medium">${shop.name}</label>
+        </div>
+    `).join('');
+}
+
+async function editShop(id) {
+    const res = await fetch(`/api/shops/${id}`);
+    if (res.ok) {
+        const shop = await res.json();
+        shopId.value = shop.id;
+        shopName.value = shop.name;
+        locationInput.value = shop.location;
+        contact.value = shop.contact;
+        link.value = shop.link;
+        image.value = shop.image || '';
+        map.value = shop.map_url || '';
+        timings.value = shop.timings || '';
+        saveShopBtn.textContent = 'Update Shop';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+async function deleteShop(id) {
+    if (confirm('Delete this shop?')) {
+        await fetch(`/api/shops/${id}`, { method: 'DELETE' });
+        fetchShops();
+    }
+}
+
+saveShopBtn.addEventListener('click', async () => {
+    if (!shopName.value.trim() || !locationInput.value.trim() || !contact.value.trim() || !link.value.trim()) {
+        alert('Please fill all required fields');
+        return;
+    }
+    const shopData = {
+        name: shopName.value.trim(),
+        location: locationInput.value.trim(),
+        contact: contact.value.trim(),
+        link: link.value.trim(),
+        image: image.value.trim(),
+        map_url: map.value.trim(),
+        timings: timings.value.trim()
+    };
+    const method = shopId.value ? 'PUT' : 'POST';
+    const url = shopId.value ? `/api/shops/${shopId.value}` : '/api/shops';
+    if (shopId.value && !confirm('Update this shop?')) return;
+    await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(shopData) });
+    alert(shopId.value ? 'Shop updated!' : 'Shop added!');
+    shopId.value = '';
+    shopName.value = locationInput.value = contact.value = link.value = image.value = map.value = timings.value = '';
+    saveShopBtn.textContent = 'Save Shop';
+    fetchShops();
+});
+
+// Product Functions
+async function fetchProducts() {
+    const res = await fetch('/api/products');
+    const products = await res.json();
+    productList.innerHTML = products.map(p => `
+        <tr>
+            <td class="p-2 font-medium">${p.name}</td>
+            <td class="p-2"><img src="${p.image}" alt="${p.name}" class="w-16 h-16 object-cover rounded"></td>
+            <td class="p-2">${p.shop_name}</td>
+            <td class="p-2 space-x-2">
+                <button class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600" onclick="editProduct(${p.id})">Edit</button>
+                <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" onclick="deleteProduct(${p.id})">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function editProduct(id) {
+    const res = await fetch(`/api/products/${id}`);
+    if (res.ok) {
+        const p = await res.json();
+        productId.value = p.id;
+        productName.value = p.name;
+        productImage.value = p.image;
+        productDescription.value = p.description || '';
+        productShopSelect.value = p.shop_id;
+        saveProductBtn.textContent = 'Update Product';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+async function deleteProduct(id) {
+    if (confirm('Delete this product?')) {
+        await fetch(`/api/products/${id}`, { method: 'DELETE' });
+        fetchProducts();
+    }
+}
+
+saveProductBtn.addEventListener('click', async () => {
+    if (!productName.value.trim() || !productImage.value.trim() || !productShopSelect.value) {
+        alert('Please fill all required fields');
+        return;
+    }
+    const productData = {
+        name: productName.value.trim(),
+        image: productImage.value.trim(),
+        description: productDescription.value.trim(),
+        shop_id: productShopSelect.value
+    };
+    const method = productId.value ? 'PUT' : 'POST';
+    const url = productId.value ? `/api/products/${productId.value}` : '/api/products';
+    if (productId.value && !confirm('Update this product?')) return;
+    await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productData) });
+    alert(productId.value ? 'Product updated!' : 'Product added!');
+    productId.value = productName.value = productImage.value = productDescription.value = productShopSelect.value = '';
+    saveProductBtn.textContent = 'Save Product';
+    fetchProducts();
+});
+
+// Toggle Homepage Display
+async function toggleShopHomepage(shopId, show) {
+    await fetch(`/api/shops/${shopId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ show_on_homepage: show ? 1 : 0 })
+    });
+    fetchShops();
+}
+
+// Initial Load
+fetchShops();
+fetchProducts();
+</script>
+
+</body>
+</html>
