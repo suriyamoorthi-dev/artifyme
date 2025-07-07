@@ -5,160 +5,216 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ArtifyMe - AI Images & Gift Promotions</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
         }
         .gradient-text {
             background: linear-gradient(to right, #4f46e5, #ec4899);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        @keyframes pulse {
+            50% { opacity: .6; }
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-900">
+<body class="text-slate-800">
 
 <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-            <a href="/" class="flex items-center space-x-2">
-                <svg class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-                <span class="text-xl font-bold">ArtifyMe</span>
-            </a>
-            <nav class="hidden md:flex items-center space-x-6">
-                <a href="#gallery" class="text-gray-600 hover:text-indigo-600 font-medium">Inspiration</a>
-                <a href="#promotions" class="text-gray-600 hover:text-indigo-600 font-medium">Promotions</a>
-                <a href="/contact" class="text-gray-600 hover:text-indigo-600 font-medium">Contact</a>
-            </nav>
-        </div>
+    <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
+        <a href="/" class="flex items-center space-x-2">
+            <svg class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+            <span class="text-xl font-bold">ArtifyMe</span>
+        </a>
+        <nav class="hidden md:flex items-center space-x-6">
+            <a href="#gallery" class="text-slate-600 hover:text-indigo-600 font-medium">Inspiration</a>
+            <a href="#promotions" class="text-slate-600 hover:text-indigo-600 font-medium">Promotions</a>
+            <a href="/contact" class="text-slate-600 hover:text-indigo-600 font-medium">Contact</a>
+        </nav>
     </div>
 </header>
 
 <main>
-    <section class="text-center py-20 sm:py-28 px-4 bg-white">
+    <!-- AI Generator -->
+    <section class="text-center py-20 px-4 bg-white">
         <div class="max-w-4xl mx-auto">
-            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight">
+            <h1 class="text-5xl font-extrabold tracking-tight">
                 Imagine Anything. <span class="gradient-text">Create Instantly.</span>
             </h1>
-            <p class="mt-6 max-w-2xl mx-auto text-lg text-gray-600">
-                Use the power of AI to turn your text prompts into extraordinary images. Just describe what you want to see.
+            <p class="mt-6 text-lg text-slate-600">
+                Turn your words into AI-generated images, perfect for personalized gifts.
             </p>
-            <div class="mt-8 max-w-2xl mx-auto">
-                <form action="/generate" method="POST" class="relative">
-                    <input 
-                        type="text" 
-                        name="prompt"
-                        placeholder="e.g., A raccoon in a space suit, eating a taco, cinematic lighting"
-                        class="w-full px-5 py-4 text-lg text-gray-800 bg-gray-50 border-2 border-gray-200 rounded-full focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition-all"
-                    />
-                    <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 bg-indigo-600 text-white px-6 py-2.5 rounded-full font-semibold hover:bg-indigo-700 transition-colors">
-                        Generate
-                    </button>
-                </form>
-                <p class="mt-3 text-sm text-gray-500">You can also provide a URL in your prompt for style inspiration.</p>
+
+            <form id="avatar-form" class="mt-10 max-w-2xl mx-auto flex flex-col sm:flex-row gap-3 bg-white p-2 rounded-full shadow-lg border-2 border-slate-200">
+                <input 
+                    type="text" 
+                    name="prompt"
+                    placeholder="e.g., A majestic lion with a cosmic mane"
+                    class="flex-grow px-5 py-3 text-lg border-none bg-transparent focus:ring-0"
+                    required
+                />
+                <button type="submit" id="generateBtn" class="bg-indigo-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-indigo-700 disabled:bg-indigo-400">
+                    Generate
+                </button>
+            </form>
+
+            <div id="avatar-result-display" class="max-w-xl mx-auto text-center mt-12 hidden">
+                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-200 inline-block">
+                    <h2 class="text-2xl font-bold text-indigo-700 mb-4">🎨 Here's Your Creation!</h2>
+                    <img id="avatar-img" src="" alt="Generated Avatar" class="mx-auto rounded-lg shadow-lg w-48 h-48 object-cover border-4 border-white">
+                    <p class="text-slate-500 text-sm mt-4">Right-click to save or copy the URL below.</p>
+                    <a id="avatar-url" href="#" target="_blank" class="text-indigo-600 break-all text-xs hover:underline"></a>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="gallery" class="py-20 sm:py-24 px-4">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">What Will You Create?</h2>
-                <p class="mt-4 text-lg text-gray-600">Explore images generated by our community.</p>
+    <!-- Promotions Section -->
+    <section id="promotions" class="py-20 px-4 bg-white">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-indigo-700">🔥 Exclusive Promotions</h2>
+            <p class="mt-4 text-lg text-slate-600">Use your AI art with these special offers from our partner gift shops.</p>
+
+            <div id="promotions-grid" class="grid sm:grid-cols-2 gap-6 mt-12 text-left">
+                <div class="bg-slate-100 p-6 rounded-lg animate-pulse">
+                    <div class="h-6 bg-slate-300 rounded w-3/4 mb-3"></div>
+                    <div class="h-4 bg-slate-300 rounded w-full mb-2"></div>
+                    <div class="h-4 bg-slate-300 rounded w-5/6"></div>
+                </div>
+                <div class="bg-slate-100 p-6 rounded-lg animate-pulse">
+                    <div class="h-6 bg-slate-300 rounded w-3/4 mb-3"></div>
+                    <div class="h-4 bg-slate-300 rounded w-full mb-2"></div>
+                    <div class="h-4 bg-slate-300 rounded w-5/6"></div>
+                </div>
             </div>
-            <div class="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
-                <!-- Example Images (keep or replace as needed) -->
-                <img src="https://images.pexels.com/photos/16387202/pexels-photo-16387202/free-photo-of-a-colorful-surreal-landscape-with-a-river-and-mountains.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="rounded-lg shadow-md break-inside-avoid" alt="AI Generated Landscape">
-                <img src="https://images.pexels.com/photos/16400305/pexels-photo-16400305/free-photo-of-an-image-of-a-lion-in-a-colorful-cosmic-background.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="rounded-lg shadow-md break-inside-avoid" alt="AI Generated Lion">
-            </div>
-        </div>
-    </section>
-
-<section id="promotions" class="py-20 sm:py-24 px-4 bg-white">
-    <div class="max-w-4xl mx-auto text-center">
-        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl text-indigo-700">🎯 Promotion Space</h2>
-        <p class="mt-4 text-lg text-gray-600">Your ads or sponsored content will appear here.</p>
-
-        <div class="mt-8 border-2 border-dashed border-gray-300 rounded-lg p-10 bg-gray-50 text-gray-500">
-            <p class="text-lg">[ Place your ads, banners, or sponsor promotions here ]</p>
-        </div>
-    </div>
-</section>
-
-            <div class="grid sm:grid-cols-2 gap-6">
-    {% for offer in offers %}
-    <a href="{{ offer.shop_url }}" class="block {{ offer.color }} p-6 rounded-lg shadow text-left hover:scale-105 transition-transform">
-        <h3 class="text-xl font-semibold mb-2">{{ offer.title }}</h3>
-        <p class="text-gray-600">{{ offer.description }}</p>
-    </a>
-    {% endfor %}
-</div>
-
-
-    <section class="py-20 sm:py-24 px-4">
-        <div class="max-w-4xl mx-auto space-y-6">
-            <h2 class="text-3xl font-bold tracking-tight sm:text-4xl text-center text-indigo-700">How to Use Promptly</h2>
-            <ol class="list-decimal list-inside text-gray-700 space-y-3 text-lg mt-6">
-                <li>Type your imagination into the prompt box above.</li>
-                <li>Click "Generate" to create stunning AI art.</li>
-                <li>Preview your creations and download them.</li>
-                <li>Use them on personalized gifts via our partnered shops.</li>
-            </ol>
-            <div class="bg-gray-50 p-4 rounded-lg shadow text-center">
-                <h3 class="text-xl font-semibold mb-2">💡 Sample Prompts:</h3>
-                <ul class="list-disc list-inside text-gray-600 space-y-1 text-base">
-                    <li>"A futuristic city at sunset with flying cars"</li>
-                    <li>"A cute puppy wearing sunglasses in a park"</li>
-                    <li>"An astronaut exploring a candy planet"</li>
-                    <li>"Your company logo in 3D neon style"</li>
-                </ul>
+            <div id="promotions-error" class="hidden mt-10 text-red-500 bg-red-100 p-4 rounded-lg">
+                Could not load promotions at this time. Please check back later.
             </div>
         </div>
     </section>
 </main>
 
-<footer class="bg-gray-900 text-white">
-    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div>
-                <h3 class="text-sm font-semibold tracking-wider uppercase">Create</h3>
-                <ul class="mt-4 space-y-4">
-                    <li><a href="#" class="text-base text-gray-400 hover:text-white">AI Image Generator</a></li>
-                    <li><a href="#gallery" class="text-base text-gray-400 hover:text-white">Inspiration Gallery</a></li>
-                </ul>
-            </div>
-            <div>
-                <h3 class="text-sm font-semibold tracking-wider uppercase">Discover</h3>
-                <ul class="mt-4 space-y-4">
-                    <li><a href="#promotions" class="text-base text-gray-400 hover:text-white">Promotions</a></li>
-                    <li><a href="#" class="text-base text-gray-400 hover:text-white">Personalized Gifts</a></li>
-                </ul>
-            </div>
-            <div>
-                <h3 class="text-sm font-semibold tracking-wider uppercase">Company</h3>
-                <ul class="mt-4 space-y-4">
-                    <li><a href="/terms" class="text-base text-gray-400 hover:text-white">Terms</a></li>
-                    <li><a href="/privacy" class="text-base text-gray-400 hover:text-white">Privacy</a></li>
-                </ul>
-            </div>
-            <div>
-                <h3 class="text-sm font-semibold tracking-wider uppercase">Follow Us</h3>
-                <div class="mt-4 flex space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-white">Twitter</a>
-                    <a href="#" class="text-gray-400 hover:text-white">Instagram</a>
-                </div>
-            </div>
+<footer class="bg-slate-900 text-white">
+    <div class="max-w-7xl mx-auto py-12 px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div>
+            <h3 class="text-sm font-semibold uppercase">Create</h3>
+            <ul class="mt-4 space-y-4">
+                <li><a href="#" class="text-slate-400 hover:text-white">AI Image Generator</a></li>
+                <li><a href="#gallery" class="text-slate-400 hover:text-white">Inspiration Gallery</a></li>
+            </ul>
         </div>
-        <div class="mt-8 border-t border-gray-700 pt-8 text-center">
-            <p class="text-base text-gray-400">&copy; 2025 Promptly. All Rights Reserved.</p>
+        <div>
+            <h3 class="text-sm font-semibold uppercase">Discover</h3>
+            <ul class="mt-4 space-y-4">
+                <li><a href="#promotions" class="text-slate-400 hover:text-white">Promotions</a></li>
+                <li><a href="#" class="text-slate-400 hover:text-white">Personalized Gifts</a></li>
+            </ul>
+        </div>
+        <div>
+            <h3 class="text-sm font-semibold uppercase">Company</h3>
+            <ul class="mt-4 space-y-4">
+                <li><a href="/terms" class="text-slate-400 hover:text-white">Terms</a></li>
+                <li><a href="/privacy" class="text-slate-400 hover:text-white">Privacy</a></li>
+            </ul>
+        </div>
+        <div>
+            <h3 class="text-sm font-semibold uppercase">Follow Us</h3>
+            <div class="mt-4 flex space-x-6">
+                <a href="#" class="text-slate-400 hover:text-white"><i class="fab fa-twitter fa-lg"></i></a>
+                <a href="#" class="text-slate-400 hover:text-white"><i class="fab fa-instagram fa-lg"></i></a>
+            </div>
         </div>
     </div>
 </footer>
+
+<script>document.addEventListener('DOMContentLoaded', function() {
+    
+    const avatarForm = document.getElementById('avatar-form');
+    const generateBtn = document.getElementById('generateBtn');
+
+    avatarForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        generateBtn.disabled = true;
+        generateBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>Generating...`;
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch('/api/generate-avatar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: formData.get('prompt') })
+            });
+
+            const data = await response.json();
+
+            if (data.avatar_url) {
+                document.getElementById('avatar-img').src = data.avatar_url;
+                const urlLink = document.getElementById('avatar-url');
+                urlLink.href = data.avatar_url;
+                urlLink.innerText = data.avatar_url;
+                document.getElementById('avatar-result-display').classList.remove('hidden');
+            } else {
+                alert('Error generating avatar. Please try again.');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('An unexpected error occurred.');
+        } finally {
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = "Generate";
+        }
+    });
+
+
+    // Load Offers
+    async function loadPromotions() {
+        const grid = document.getElementById('promotions-grid');
+        const errorEl = document.getElementById('promotions-error');
+
+        try {
+            const response = await fetch('/api/offers');
+            const offers = await response.json();
+
+            grid.innerHTML = '';
+
+            offers.forEach(offer => {
+    const offerEl = document.createElement('div');
+    offerEl.className = `p-6 rounded-xl shadow-lg border hover:scale-105 hover:shadow-xl transition-all duration-300 ${offer.color || 'bg-amber-50 border-amber-200'}`;
+
+    offerEl.innerHTML = `
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-xl font-bold text-indigo-800">${offer.title}</h3>
+            ${offer.percentage ? `<span class="bg-indigo-100 text-indigo-800 text-sm font-semibold px-3 py-1 rounded-full">${offer.percentage} OFF</span>` : ''}
+        </div>
+        <p class="opacity-80 mb-2">${offer.description}</p>
+        ${offer.shop_name ? `<p class="text-sm font-semibold text-slate-600">Shop: ${offer.shop_name}</p>` : ''}
+    `;
+
+    grid.appendChild(offerEl);
+});
+
+        } catch (err) {
+            console.error('Failed to load promotions:', err);
+            grid.innerHTML = '';
+            errorEl.classList.remove('hidden');
+        }
+    }
+
+    loadPromotions();
+
+});
+</script>
 
 </body>
 </html>

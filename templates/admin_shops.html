@@ -9,9 +9,9 @@
 
 <h1 class="text-3xl font-bold text-center text-indigo-700">🎁 Gift Shop Admin Panel</h1>
 
-<!-- Add / Edit Shop Form -->
+<!-- Shop Form -->
 <div class="max-w-xl mx-auto bg-white shadow p-6 rounded-xl space-y-4">
-    <h2 class="text-xl font-semibold text-gray-700">Add or Update Gift Shop</h2>
+    <h2 class="text-xl font-semibold text-gray-700">Add / Update Gift Shop</h2>
     <input id="shopId" type="hidden">
     <input id="shopName" placeholder="Shop Name *" class="w-full p-3 border rounded-lg">
     <input id="location" placeholder="Location *" class="w-full p-3 border rounded-lg">
@@ -23,7 +23,7 @@
     <button id="saveShop" class="w-full bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700">Save Shop</button>
 </div>
 
-<!-- Shops List -->
+<!-- Shop List -->
 <div class="max-w-4xl mx-auto bg-white shadow p-6 rounded-xl mt-10 overflow-x-auto">
     <h2 class="text-xl font-semibold text-gray-700 mb-4">Existing Shops</h2>
     <table class="w-full table-auto text-left text-sm">
@@ -40,9 +40,9 @@
     </table>
 </div>
 
-<!-- Product Management Section -->
+<!-- Product Section -->
 <div class="max-w-4xl mx-auto bg-white shadow p-6 rounded-xl mt-10 space-y-4">
-    <h2 class="text-xl font-semibold text-gray-700 mb-4">Manage Products for a Shop</h2>
+    <h2 class="text-xl font-semibold text-gray-700 mb-4">Manage Products</h2>
     <div class="grid md:grid-cols-3 gap-4">
         <input id="productId" type="hidden">
         <input id="productName" placeholder="Product Name *" class="p-3 border rounded-lg">
@@ -71,14 +71,45 @@
     </table>
 </div>
 
-<!-- Homepage Shops Control -->
+<!-- Offer Section -->
+<div class="max-w-4xl mx-auto bg-white shadow p-6 rounded-xl mt-10 space-y-4">
+    <h2 class="text-xl font-semibold text-gray-700 mb-4">Manage Offers</h2>
+    <div class="grid md:grid-cols-3 gap-4">
+        <input id="offerId" type="hidden">
+        <input id="offerTitle" placeholder="Offer Title *" class="p-3 border rounded-lg">
+        <input id="offerImage" placeholder="Image URL *" class="p-3 border rounded-lg">
+        <input id="offerPercentage" placeholder="Offer Text (e.g. 20% OFF)" class="p-3 border rounded-lg">
+        <select id="offerShopSelect" class="w-full p-3 border rounded-lg md:col-span-3">
+            <option value="">Select Shop *</option>
+        </select>
+    </div>
+    <button id="saveOffer" class="w-full bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700">Save Offer</button>
+</div>
+
+<!-- Offer List -->
+<div class="max-w-4xl mx-auto bg-white shadow p-6 rounded-xl mt-6 overflow-x-auto">
+    <h3 class="text-xl font-semibold text-gray-700 mb-4">Existing Offers</h3>
+    <table class="w-full table-auto text-left text-sm">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="p-2">Title</th>
+                <th class="p-2">Image</th>
+                <th class="p-2">Shop</th>
+                <th class="p-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="offerList"></tbody>
+    </table>
+</div>
+
+<!-- Homepage Control -->
 <div class="max-w-4xl mx-auto bg-white shadow p-6 rounded-xl mt-10">
     <h2 class="text-xl font-semibold text-gray-700 mb-4">Homepage Display Control</h2>
     <div id="homepageShopControls" class="space-y-2"></div>
 </div>
 
 <script>
-// Shop Management
+// DOM References
 const shopId = document.getElementById('shopId');
 const shopName = document.getElementById('shopName');
 const locationInput = document.getElementById('location');
@@ -87,45 +118,49 @@ const link = document.getElementById('link');
 const image = document.getElementById('image');
 const map = document.getElementById('map');
 const timings = document.getElementById('timings');
-const saveShopBtn = document.getElementById('saveShop');
 const shopList = document.getElementById('shopList');
 const homepageShopControls = document.getElementById('homepageShopControls');
 
-// Product Management
 const productId = document.getElementById('productId');
 const productName = document.getElementById('productName');
 const productImage = document.getElementById('productImage');
 const productDescription = document.getElementById('productDescription');
 const productShopSelect = document.getElementById('productShopSelect');
-const saveProductBtn = document.getElementById('saveProduct');
 const productList = document.getElementById('productList');
 
-// Fetch Shops
+const offerId = document.getElementById('offerId');
+const offerTitle = document.getElementById('offerTitle');
+const offerImage = document.getElementById('offerImage');
+const offerPercentage = document.getElementById('offerPercentage');
+const offerShopSelect = document.getElementById('offerShopSelect');
+const offerList = document.getElementById('offerList');
+
+// Fetch & Render Shops
 async function fetchShops() {
     const res = await fetch('/api/shops');
     const shops = await res.json();
 
-    shopList.innerHTML = shops.map(shop => `
+    shopList.innerHTML = shops.map(s => `
         <tr>
-            <td class="p-2 font-medium">${shop.name}</td>
-            <td class="p-2">${shop.location}</td>
-            <td class="p-2">${shop.contact}</td>
-            <td class="p-2"><a href="${shop.link}" target="_blank" class="text-blue-600 hover:underline">View</a></td>
+            <td class="p-2 font-medium">${s.name}</td>
+            <td class="p-2">${s.location}</td>
+            <td class="p-2">${s.contact}</td>
+            <td class="p-2"><a href="${s.link}" target="_blank" class="text-blue-600 hover:underline">View</a></td>
             <td class="p-2 space-x-2">
-                <button class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600" onclick="editShop(${shop.id})">Edit</button>
-                <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" onclick="deleteShop(${shop.id})">Delete</button>
+                <button onclick="editShop(${s.id})" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
+                <button onclick="deleteShop(${s.id})" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
             </td>
         </tr>
     `).join('');
 
-    // Populate product dropdown
-    productShopSelect.innerHTML = `<option value="">Select Shop *</option>` + shops.map(shop => `<option value="${shop.id}">${shop.name}</option>`).join('');
+    const options = `<option value="">Select Shop *</option>` + shops.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+    productShopSelect.innerHTML = options;
+    offerShopSelect.innerHTML = options;
 
-    // Populate Homepage Control
-    homepageShopControls.innerHTML = shops.map(shop => `
+    homepageShopControls.innerHTML = shops.map(s => `
         <div class="flex items-center space-x-2">
-            <input type="checkbox" id="home-shop-${shop.id}" ${shop.show_on_homepage ? 'checked' : ''} onchange="toggleShopHomepage(${shop.id}, this.checked)">
-            <label for="home-shop-${shop.id}" class="font-medium">${shop.name}</label>
+            <input type="checkbox" id="home-shop-${s.id}" ${s.show_on_homepage ? 'checked' : ''} onchange="toggleShopHomepage(${s.id}, this.checked)">
+            <label for="home-shop-${s.id}">${s.name}</label>
         </div>
     `).join('');
 }
@@ -133,16 +168,15 @@ async function fetchShops() {
 async function editShop(id) {
     const res = await fetch(`/api/shops/${id}`);
     if (res.ok) {
-        const shop = await res.json();
-        shopId.value = shop.id;
-        shopName.value = shop.name;
-        locationInput.value = shop.location;
-        contact.value = shop.contact;
-        link.value = shop.link;
-        image.value = shop.image || '';
-        map.value = shop.map_url || '';
-        timings.value = shop.timings || '';
-        saveShopBtn.textContent = 'Update Shop';
+        const s = await res.json();
+        shopId.value = s.id;
+        shopName.value = s.name;
+        locationInput.value = s.location;
+        contact.value = s.contact;
+        link.value = s.link;
+        image.value = s.image || '';
+        map.value = s.map_url || '';
+        timings.value = s.timings || '';
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
@@ -154,30 +188,15 @@ async function deleteShop(id) {
     }
 }
 
-saveShopBtn.addEventListener('click', async () => {
-    if (!shopName.value.trim() || !locationInput.value.trim() || !contact.value.trim() || !link.value.trim()) {
-        alert('Please fill all required fields');
-        return;
-    }
-    const shopData = {
-        name: shopName.value.trim(),
-        location: locationInput.value.trim(),
-        contact: contact.value.trim(),
-        link: link.value.trim(),
-        image: image.value.trim(),
-        map_url: map.value.trim(),
-        timings: timings.value.trim()
-    };
+document.getElementById('saveShop').onclick = async () => {
+    if (!shopName.value || !locationInput.value || !contact.value || !link.value) return alert('Fill all required fields');
+    const data = { name: shopName.value, location: locationInput.value, contact: contact.value, link: link.value, image: image.value, map_url: map.value, timings: timings.value };
     const method = shopId.value ? 'PUT' : 'POST';
     const url = shopId.value ? `/api/shops/${shopId.value}` : '/api/shops';
-    if (shopId.value && !confirm('Update this shop?')) return;
-    await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(shopData) });
-    alert(shopId.value ? 'Shop updated!' : 'Shop added!');
-    shopId.value = '';
-    shopName.value = locationInput.value = contact.value = link.value = image.value = map.value = timings.value = '';
-    saveShopBtn.textContent = 'Save Shop';
+    await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    shopId.value = shopName.value = locationInput.value = contact.value = link.value = image.value = map.value = timings.value = '';
     fetchShops();
-});
+};
 
 // Product Functions
 async function fetchProducts() {
@@ -186,59 +205,52 @@ async function fetchProducts() {
     productList.innerHTML = products.map(p => `
         <tr>
             <td class="p-2 font-medium">${p.name}</td>
-            <td class="p-2"><img src="${p.image}" alt="${p.name}" class="w-16 h-16 object-cover rounded"></td>
+            <td class="p-2"><img src="${p.image}" class="w-16 h-16 object-cover rounded"></td>
             <td class="p-2">${p.shop_name}</td>
             <td class="p-2 space-x-2">
-                <button class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600" onclick="editProduct(${p.id})">Edit</button>
-                <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" onclick="deleteProduct(${p.id})">Delete</button>
+                <button onclick="editProduct(${p.id})" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
+                <button onclick="deleteProduct(${p.id})" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
             </td>
         </tr>
     `).join('');
 }
 
-async function editProduct(id) {
-    const res = await fetch(`/api/products/${id}`);
-    if (res.ok) {
-        const p = await res.json();
-        productId.value = p.id;
-        productName.value = p.name;
-        productImage.value = p.image;
-        productDescription.value = p.description || '';
-        productShopSelect.value = p.shop_id;
-        saveProductBtn.textContent = 'Update Product';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+// Offer Functions
+async function fetchOffers() {
+    const res = await fetch('/api/offers');
+    const offers = await res.json();
+    offerList.innerHTML = offers.map(o => `
+        <tr>
+            <td class="p-2 font-medium">${o.title} <span class="text-green-600">${o.percentage || ''}</span></td>
+            <td class="p-2"><img src="${o.image}" class="w-16 h-16 object-cover rounded"></td>
+            <td class="p-2">${o.shop_name}</td>
+            <td class="p-2 space-x-2">
+                <button onclick="editOffer(${o.id})" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
+                <button onclick="deleteOffer(${o.id})" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+            </td>
+        </tr>
+    `).join('');
 }
 
-async function deleteProduct(id) {
-    if (confirm('Delete this product?')) {
-        await fetch(`/api/products/${id}`, { method: 'DELETE' });
-        fetchProducts();
+document.getElementById('saveOffer').onclick = async () => {
+    if (!offerTitle.value.trim() || !offerImage.value.trim() || !offerShopSelect.value) {
+        return alert('Please fill all required fields');
     }
-}
-
-saveProductBtn.addEventListener('click', async () => {
-    if (!productName.value.trim() || !productImage.value.trim() || !productShopSelect.value) {
-        alert('Please fill all required fields');
-        return;
-    }
-    const productData = {
-        name: productName.value.trim(),
-        image: productImage.value.trim(),
-        description: productDescription.value.trim(),
-        shop_id: productShopSelect.value
+    const offerData = {
+        title: offerTitle.value.trim(),
+        image: offerImage.value.trim(),
+        percentage: offerPercentage.value.trim(),
+        shop_id: offerShopSelect.value
     };
-    const method = productId.value ? 'PUT' : 'POST';
-    const url = productId.value ? `/api/products/${productId.value}` : '/api/products';
-    if (productId.value && !confirm('Update this product?')) return;
-    await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productData) });
-    alert(productId.value ? 'Product updated!' : 'Product added!');
-    productId.value = productName.value = productImage.value = productDescription.value = productShopSelect.value = '';
-    saveProductBtn.textContent = 'Save Product';
-    fetchProducts();
-});
+    const method = offerId.value ? 'PUT' : 'POST';
+    const url = offerId.value ? `/api/offers/${offerId.value}` : '/api/offers';
+    if (offerId.value && !confirm('Update this offer?')) return;
+    await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(offerData) });
+    alert(offerId.value ? 'Offer updated!' : 'Offer added!');
+    offerId.value = offerTitle.value = offerImage.value = offerPercentage.value = offerShopSelect.value = '';
+    fetchOffers();
+};
 
-// Toggle Homepage Display
 async function toggleShopHomepage(shopId, show) {
     await fetch(`/api/shops/${shopId}`, {
         method: 'PUT',
@@ -251,6 +263,7 @@ async function toggleShopHomepage(shopId, show) {
 // Initial Load
 fetchShops();
 fetchProducts();
+fetchOffers();
 </script>
 
 </body>

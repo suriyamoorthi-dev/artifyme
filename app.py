@@ -19,7 +19,21 @@ def home():
 
 @app.route('/avatar')
 def avatar_page():
-    return render_template('avatar.html')
+    response = supabase.table('shop_offers').select('*, gift_shops(link)').execute()
+    
+    offers = []
+    for o in response.data:
+        shop_data = o.get('gift_shops') or {}
+
+        offers.append({
+            "id": o['id'],
+            "title": o['title'],
+            "description": o.get('description', ''),
+            "shop_url": shop_data.get('link') if shop_data else '#',
+            "color": o.get('color', 'bg-white')
+        })
+    
+    return render_template('avatar.html', offers=offers)
 
 @app.route('/gifts')
 def gifts_page():
@@ -41,21 +55,22 @@ def privacy():
     return render_template('privacy.html')
 
 
-@app.route('/generate', methods=['POST'])
-def generate():
-    prompt_text = request.form.get('prompt')
+@app.route('/api/generate-avatar', methods=['POST'])
+def api_generate_avatar():
+    data = request.get_json()
+    prompt_text = data.get('prompt')
 
     if not prompt_text:
-        return "Prompt required", 400
+        return jsonify({"error": "Prompt required"}), 400
 
     image_url = generate_ai_avatar(prompt_text)
 
     if image_url:
         return jsonify({"avatar_url": image_url})
     else:
-        return "Error generating avatar", 500
+        return jsonify({"error": "Error generating avatar"}), 500
 
-
+import requests
 def generate_ai_avatar(prompt_text):
     response = requests.post(
         "https://api.together.xyz/v1/images/generations",
@@ -75,9 +90,12 @@ def generate_ai_avatar(prompt_text):
         return None
 
     if response.status_code == 200 and "data" in result and len(result["data"]) > 0:
-        return result["data"][0]["url"]
+        short_url = result["data"][0]["url"]
+        return short_url  # Return the short link only
 
     return None
+
+
 
 
 @app.route('/gifts')
@@ -227,11 +245,53 @@ def post_review():
     }).execute()
 
     return jsonify({'message': 'Review added'}), 201
-
 @app.route('/api/offers')
 def get_offers():
-    response = supabase.table('shop_offers').select('*').execute()
-    return jsonify(response.data)
+    response = supabase.table('shop_offers').select('*, gift_shops(name)').execute()
+    offers = []
+    for o in response.data:
+        offers.append({
+            "id": o['id'],
+            "title": o['title'],
+            "image": o['image'],
+            "shop_id": o['shop_id'],
+            "shop_name": o['gift_shops']['name'] if 'gift_shops' in o else '',
+            "description": o.get('description', ''),
+            "color": o.get('color', 'bg-white'),
+            "percentage": o.get('percentage', '')
+        })
+    return jsonify(offers)
+
+@app.route('/api/offers', methods=['POST'])
+def add_offer():
+    data = request.json
+    supabase.table('shop_offers').insert({
+        "title": data.get('title', ''),
+        "description": data.get('description', ''),
+        "color": data.get('color', 'bg-white'),
+        "shop_id": data.get('shop_id'),
+        "percentage": data.get('percentage', '')
+    }).execute()
+    return jsonify({"status": "added"})
+
+
+@app.route('/api/offers/<int:offer_id>', methods=['PUT'])
+def update_offer(offer_id):
+    data = request.json
+    supabase.table('shop_offers').update({
+        "title": data.get('title', ''),
+        "description": data.get('description', ''),
+        "color": data.get('color', 'bg-white'),
+        "shop_id": data.get('shop_id'),
+        "percentage": data.get('percentage', '')
+    }).eq('id', offer_id).execute()
+    return jsonify({"status": "updated"})
+
+@app.route('/api/offers/<int:offer_id>', methods=['DELETE'])
+def delete_offer(offer_id):
+    supabase.table('shop_offers').delete().eq('id', offer_id).execute()
+    return jsonify({"status": "deleted"})
+
 
 # ------------------- End Supabase Gift Shop API ------------------- #
 
