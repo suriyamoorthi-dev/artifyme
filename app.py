@@ -247,19 +247,24 @@ def post_review():
     return jsonify({'message': 'Review added'}), 201
 @app.route('/api/offers')
 def get_offers():
-    response = supabase.table('shop_offers').select('*, gift_shops(name)').execute()
+    response = supabase.table('shop_offers').select('*, gift_shops(name, link)').execute()
+    
     offers = []
     for o in response.data:
+        shop_data = o.get('gift_shops') or {}
+        
         offers.append({
             "id": o['id'],
             "title": o['title'],
-            "image": o['image'],
+            "image": o.get('image', ''),
             "shop_id": o['shop_id'],
-            "shop_name": o['gift_shops']['name'] if 'gift_shops' in o else '',
+            "shop_name": shop_data.get('name', ''),
+            "shop_url": shop_data.get('link', f"/shop/{o['shop_id']}"),
             "description": o.get('description', ''),
             "color": o.get('color', 'bg-white'),
             "percentage": o.get('percentage', '')
         })
+        
     return jsonify(offers)
 
 @app.route('/api/offers', methods=['POST'])

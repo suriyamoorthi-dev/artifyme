@@ -198,11 +198,12 @@
             ${offer.percentage ? `<span class="bg-indigo-100 text-indigo-800 text-sm font-semibold px-3 py-1 rounded-full">${offer.percentage} OFF</span>` : ''}
         </div>
         <p class="opacity-80 mb-2">${offer.description}</p>
-        ${offer.shop_name ? `<p class="text-sm font-semibold text-slate-600">Shop: ${offer.shop_name}</p>` : ''}
-    `;
+    ${offer.shop_name ? `<p class="text-sm font-semibold text-slate-600">Shop: <a href="/shop/${offer.shop_id}" class="text-indigo-600 hover:underline">${offer.shop_name}</a></p>` : ''}
+`;
 
     grid.appendChild(offerEl);
 });
+
 
         } catch (err) {
             console.error('Failed to load promotions:', err);
