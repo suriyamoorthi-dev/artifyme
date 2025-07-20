@@ -7,7 +7,7 @@ import requests
 from io import BytesIO
 import time
 from PIL import Image
-
+from dotenv import load_dotenv
 app = Flask(__name__)
 
 # Together API key
@@ -15,12 +15,14 @@ TOGETHER_API_KEY = "f5d391dcc7223e9f78bd4523f9bd35236742b1c31a3d58cf597e8386de2d
 
 # Supabase Config
 from supabase import create_client, Client
+load_dotenv()
 
-# ✅ Supabase URL and Service Role Key (Only one key used)
-SUPABASE_URL = "https://mmhvljqdyzskxnzkrgql.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1taHZsanFkeXpza3huemtyZ3FsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTIxMDA5NywiZXhwIjoyMDY2Nzg2MDk3fQ.K2Wt3QK9UGR2yUD1shXvC-1MUFoJNpvX6eqz6u-1ts8"
+# Get Supabase credentials from .env
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+# Create Supabase client
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
 @app.route('/')
@@ -345,4 +347,7 @@ def delete_offer(offer_id):
 
 
 # ------------------- End Supabase Gift Shop API ------------------- #
+if __name__ == '__main__':
+    # Only runs locally for debugging
+    app.run(debug=True)
 
