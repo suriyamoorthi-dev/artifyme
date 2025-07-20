@@ -2,6 +2,11 @@ import os
 import requests
 from flask import Flask, request, jsonify, render_template
 from supabase import create_client, Client
+import base64
+import requests
+from io import BytesIO
+import time
+from PIL import Image
 
 app = Flask(__name__)
 
@@ -9,9 +14,14 @@ app = Flask(__name__)
 TOGETHER_API_KEY = "f5d391dcc7223e9f78bd4523f9bd35236742b1c31a3d58cf597e8386de2d406e"
 
 # Supabase Config
+from supabase import create_client, Client
+
+# ✅ Supabase URL and Service Role Key (Only one key used)
 SUPABASE_URL = "https://mmhvljqdyzskxnzkrgql.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1taHZsanFkeXpza3huemtyZ3FsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEyMTAwOTcsImV4cCI6MjA2Njc4NjA5N30.gtVE8Dg4fdf37xEAAghgrMjyIpOZOTnIuOFn0qk59uM"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1taHZsanFkeXpza3huemtyZ3FsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTIxMDA5NywiZXhwIjoyMDY2Nzg2MDk3fQ.K2Wt3QK9UGR2yUD1shXvC-1MUFoJNpvX6eqz6u-1ts8"
+
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
 
 @app.route('/')
 def home():
@@ -35,6 +45,7 @@ def avatar_page():
     
     return render_template('avatar.html', offers=offers)
 
+
 @app.route('/gifts')
 def gifts_page():
     return render_template('gifts_shops.html')
@@ -53,50 +64,85 @@ def terms():
 @app.route('/privacy')
 def privacy():
     return render_template('privacy.html')
+def generate_ai_avatar(prompt_text):
+    try:
+        response = requests.post(
+            "https://api.together.xyz/v1/images/generations",
+            headers={"Authorization": f"Bearer {TOGETHER_API_KEY}"},
+            json={
+                "model": "black-forest-labs/FLUX.1-schnell-Free",
+                "prompt": prompt_text,
+                "width": 512,
+                "height": 512,
+                "steps": 4
+            },
+            timeout=60
+        )
+
+        result = response.json()
+        short_url = result["data"][0]["url"]
+        resolved = requests.head(short_url, allow_redirects=True)
+        long_url = resolved.url
+
+        img_response = requests.get(long_url)
+        img = Image.open(BytesIO(img_response.content)).convert("RGB")
+
+        buffer = BytesIO()
+        img.save(buffer, format="JPEG", quality=90)
+        buffer.seek(0)
+
+        filename = f"avatar_{int(time.time())}.jpg"
+        path = filename  # ✅ Fix here: just filename
+
+        # Upload to Supabase
+        upload = supabase.storage.from_('avatars').upload(
+            path,
+            buffer.getvalue(),
+            {"content-type": "image/jpeg"}
+        )
+
+        if upload:
+            public_url = f"{SUPABASE_URL}/storage/v1/object/public/avatars/{filename}"
+            print("✅ Uploaded avatar:", public_url)
+            return public_url
+        else:
+            print("❌ Upload failed")
+            return None
+
+    except Exception as e:
+        print("❌ Error:", e)
+        return None
 
 
+
+# 🚀 Flask Route for API
 @app.route('/api/generate-avatar', methods=['POST'])
 def api_generate_avatar():
     data = request.get_json()
-    prompt_text = data.get('prompt')
-
-    if not prompt_text:
+    prompt = data.get("prompt")
+    if not prompt:
         return jsonify({"error": "Prompt required"}), 400
 
-    image_url = generate_ai_avatar(prompt_text)
+    avatar_url = generate_ai_avatar(prompt)
+    if avatar_url:
+        return jsonify({"avatar_url": avatar_url})
+    return jsonify({"error": "Avatar generation failed"}), 500
 
-    if image_url:
-        return jsonify({"avatar_url": image_url})
-    else:
-        return jsonify({"error": "Error generating avatar"}), 500
-
-import requests
-def generate_ai_avatar(prompt_text):
-    response = requests.post(
-        "https://api.together.xyz/v1/images/generations",
-        headers={"Authorization": f"Bearer {TOGETHER_API_KEY}"},
-        json={
-            "model": "black-forest-labs/FLUX.1-schnell-Free",
-            "prompt": prompt_text,
-            "width": 512,
-            "height": 512,
-            "steps": 4
-        }
-    )
-
+@app.route('/api/avatars')
+def list_avatars():
     try:
-        result = response.json()
-    except:
-        return None
+        response = supabase.storage.from_('avatars').list()
+        files = response or []
 
-    if response.status_code == 200 and "data" in result and len(result["data"]) > 0:
-        short_url = result["data"][0]["url"]
-        return short_url  # Return the short link only
+        public_urls = [
+            f"{SUPABASE_URL}/storage/v1/object/public/avatars/{f['name']}"
+            for f in files
+        ]
 
-    return None
-
-
-
+        return jsonify(public_urls)
+    except Exception as e:
+        print("Error loading avatars:", e)
+        return jsonify([]), 500
 
 @app.route('/gifts')
 def gifts():
@@ -300,8 +346,3 @@ def delete_offer(offer_id):
 
 # ------------------- End Supabase Gift Shop API ------------------- #
 
-import os
-
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
