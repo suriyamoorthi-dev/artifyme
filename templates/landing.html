@@ -1,185 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Avatar & Personalized Gifts</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Avatar & Personalized Gifts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
 
+<!-- Header -->
 <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-            <a href="/" class="flex items-center space-x-2">
-                <svg class="h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.813 15.904L9 15l-1.813-1.813a2 2 0 010-2.828L9 9l.813.813a2 2 0 010 2.828L9.813 15.904z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.187 15.904L15 15l1.813-1.813a2 2 0 000-2.828L15 9l-.813.813a2 2 0 000 2.828L14.187 15.904z" />
-                </svg>
-                <span class="text-xl font-bold text-gray-800">ArtifyMe</span>
-            </a>
-            <nav class="hidden md:flex items-center space-x-8">
-                <a href="#features" class="text-gray-600 hover:text-indigo-600 font-medium">Features</a>
-                <a href="#how-it-works" class="text-gray-600 hover:text-indigo-600 font-medium">How It Works</a>
-                <a href="/gifts" class="text-gray-600 hover:text-indigo-600 font-medium">Gift Shop</a>
-            </nav>
-            <a href="/avatar" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors">Get Started</a>
-        </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <a href="/" class="flex items-center space-x-2">
+        <svg class="h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.813 15.904L9 15l-1.813-1.813a2 2 0 010-2.828L9 9l.813.813a2 2 0 010 2.828L9.813 15.904z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.187 15.904L15 15l1.813-1.813a2 2 0 000-2.828L15 9l-.813.813a2 2 0 000 2.828L14.187 15.904z" />
+        </svg>
+        <span class="text-xl font-bold text-gray-800">ArtifyMe</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center space-x-8">
+        <a href="#features" class="text-gray-600 hover:text-indigo-600 font-medium">Features</a>
+        <a href="#how-it-works" class="text-gray-600 hover:text-indigo-600 font-medium">How It Works</a>
+        <a href="/celebration" class="text-gray-600 hover:text-indigo-600 font-medium">Celebration Ideas</a>
+        <a href="/gifts" class="text-gray-600 hover:text-indigo-600 font-medium">Gift Shop</a>
+      </nav>
+
+      <!-- CTA -->
+      <a href="/avatar" class="hidden sm:inline bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors">Get Started</a>
+
+      <!-- Mobile Menu Button -->
+      <button id="menuBtn" class="md:hidden p-2 rounded-md hover:bg-gray-100">
+        <svg class="h-6 w-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
     </div>
+  </div>
+
+  <!-- Mobile Nav -->
+  <div id="mobileMenu" class="hidden md:hidden bg-white border-t shadow-md">
+    <nav class="flex flex-col space-y-3 p-4">
+      <a href="#features" class="text-gray-600 hover:text-indigo-600 font-medium">Features</a>
+      <a href="#how-it-works" class="text-gray-600 hover:text-indigo-600 font-medium">How It Works</a>
+      <a href="/celebration" class="text-gray-600 hover:text-indigo-600 font-medium">Celebration Ideas</a>
+      <a href="/gifts" class="text-gray-600 hover:text-indigo-600 font-medium">Gift Shop</a>
+      <a href="/avatar" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">Get Started</a>
+    </nav>
+  </div>
 </header>
 
+<!-- Hero -->
 <main>
-    <section class="relative text-center py-20 sm:py-32 px-4 bg-gradient-to-br from-indigo-50 via-white to-rose-50">
-        <div class="max-w-4xl mx-auto">
-            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900">
-                Create Your <span class="text-indigo-600">AI Avatar</span> & Discover <span class="text-yellow-500">Perfect Gifts</span>
-            </h1>
-            <p class="mt-6 max-w-2xl mx-auto text-lg text-gray-600">
-                Stunning AI-generated avatars and personalized gifts from local shops—all in one place.
-            </p>
-            <div class="mt-8 flex justify-center gap-4 flex-wrap">
-                <a href="/avatar" class="bg-indigo-600 text-white rounded-lg px-8 py-3 font-semibold hover:bg-indigo-700 shadow-md transform hover:scale-105 transition">🎨 Generate Your Avatar</a>
-                <a href="/gifts" class="bg-yellow-500 text-white rounded-lg px-8 py-3 font-semibold hover:bg-yellow-600 shadow-md transform hover:scale-105 transition">🎁 Explore Gift Shops</a>
-            </div>
-        </div>
-    </section>
+  <section class="relative text-center py-20 sm:py-32 px-4 bg-gradient-to-br from-indigo-50 via-white to-rose-50">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight">
+        Create Your <span class="text-indigo-600">AI Avatar</span> & Discover <span class="text-yellow-500">Perfect Gifts</span>
+      </h1>
+      <p class="mt-6 max-w-2xl mx-auto text-lg text-gray-600">
+        Stunning AI-generated avatars and personalized gifts from local shops—all in one place.
+      </p>
+      <div class="mt-8 flex justify-center gap-4 flex-wrap">
+        <a href="/avatar" class="bg-indigo-600 text-white rounded-lg px-8 py-3 font-semibold hover:bg-indigo-700 shadow-md transform hover:scale-105 transition">🎨 Generate Your Avatar</a>
+        <a href="/gifts" class="bg-yellow-500 text-white rounded-lg px-8 py-3 font-semibold hover:bg-yellow-600 shadow-md transform hover:scale-105 transition">🎁 Explore Gift Shops</a>
+      </div>
+    </div>
+  </section>
 
-    <section class="bg-gray-50 py-16 sm:py-20 px-4 border-t">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-3xl font-bold text-center text-gray-900 mb-10">🔥 Best Rated Gift Shops</h2>
-            <div id="homepageShops" class="grid md:grid-cols-3 gap-6"></div>
-        </div>
-    </section>
+  <!-- Gift Shops -->
+  <section class="bg-gray-50 py-16 sm:py-20 px-4 border-t">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-3xl font-bold text-center text-gray-900 mb-10">🔥 Best Rated Gift Shops</h2>
+      <div id="homepageShops" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+  </section>
 
-    <section class="py-20 sm:py-24 px-4" id="how-it-works">
-        <div class="max-w-6xl mx-auto text-center">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-900">From Prompt to Masterpiece in 3 Easy Steps</h2>
-            <div class="mt-16 grid md:grid-cols-3 gap-12">
-                <div>
-                    <div class="h-20 w-20 mx-auto rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shadow-lg">
-                        <span class="text-3xl font-bold">1</span>
-                    </div>
-                    <h3 class="mt-6 text-xl font-bold">Prompt Your Idea</h3>
-                    <p class="mt-2 text-gray-600">Describe your avatar style or vibe in simple words.</p>
-                </div>
-                <div>
-                    <div class="h-20 w-20 mx-auto rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shadow-lg">
-                        <span class="text-3xl font-bold">2</span>
-                    </div>
-                    <h3 class="mt-6 text-xl font-bold">AI Generates It</h3>
-                    <p class="mt-2 text-gray-600">Our advanced AI produces multiple avatars in seconds.</p>
-                </div>
-                <div>
-                    <div class="h-20 w-20 mx-auto rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shadow-lg">
-                        <span class="text-3xl font-bold">3</span>
-                    </div>
-                    <h3 class="mt-6 text-xl font-bold">Download & Print</h3>
-                    <p class="mt-2 text-gray-600">Use your avatars for profiles or get them printed on gifts.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+  <section class="bg-gradient-to-br from-rose-50 via-white to-indigo-50 py-20 sm:py-24 px-4" id="celebration">
+    <div class="max-w-7xl mx-auto text-center">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900">
+            🎉 Welcome to the Celebration Hub
+        </h2>
+        <p class="mt-6 max-w-3xl mx-auto text-lg text-gray-600">
+            The Celebration Hub is your creative partner for weddings, birthdays, parties, and more. 
+            Generate stunning <span class="text-indigo-600 font-semibold">theme ideas</span>, 
+            <span class="text-rose-500 font-semibold">photography concepts</span>, 
+            and <span class="text-yellow-500 font-semibold">unique decoration plans</span> with the power of AI.
+        </p>
 
-    <section class="bg-white py-20 sm:py-24 px-4" id="features">
-        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-            <div class="space-y-6">
-                <h2 class="text-3xl font-bold text-gray-900">Why ArtifyMe?</h2>
-                <ul class="space-y-4">
-                    <li class="flex items-start">
-                        <svg class="h-6 w-6 text-green-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span class="ml-3">100+ unique avatar styles: anime, cartoon, fantasy & more.</span>
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="h-6 w-6 text-green-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span class="ml-3">High-resolution downloads, ready for printing on gifts.</span>
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="h-6 w-6 text-green-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span class="ml-3">Fast, secure, and your data stays private.</span>
-                    </li>
-                </ul>
+        <div class="mt-12 grid gap-8 md:grid-cols-3">
+            <div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition">
+                <h3 class="text-xl font-bold text-indigo-600 mb-3">Wedding Themes</h3>
+                <p class="text-gray-600">Elegant, modern, traditional, or fantasy — get tailor-made wedding styles and decoration ideas.</p>
             </div>
-            <div class="grid grid-cols-2 gap-4">
-                <img src="https://cdn.pixabay.com/photo/2023/02/12/20/30/anime-7783727_960_720.png" alt="Cartoon Art" class="rounded-xl shadow-lg">
-                <img src="https://cdn.pixabay.com/photo/2022/11/19/14/16/anime-7602184_960_720.png" alt="Anime Avatar" class="rounded-xl shadow-lg">
+            <div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition">
+                <h3 class="text-xl font-bold text-rose-500 mb-3">Photography Ideas</h3>
+                <p class="text-gray-600">From candid to cinematic, discover fresh angles, props, and poses for perfect photos.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition">
+                <h3 class="text-xl font-bold text-yellow-500 mb-3">Party Concepts</h3>
+                <p class="text-gray-600">Birthdays, anniversaries, or casual get-togethers — find creative decoration and theme suggestions.</p>
             </div>
         </div>
-    </section>
+
+        <div class="mt-12">
+            <a href="/celebration" class="inline-block bg-indigo-600 text-white px-8 py-3 rounded-xl font-semibold shadow-md hover:bg-indigo-700 hover:scale-105 transition">
+                ✨ Start Generating Celebration Ideas
+            </a>
+        </div>
+    </div>
+</section>
+
+  <!-- How it works -->
+  <section class="py-20 sm:py-24 px-4" id="how-it-works">
+    <div class="max-w-6xl mx-auto text-center">
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900">From Prompt to Masterpiece in 3 Easy Steps</h2>
+      <div class="mt-16 grid md:grid-cols-3 gap-12">
+        <div class="p-6 rounded-xl bg-white shadow hover:shadow-lg transition">
+          <div class="h-20 w-20 mx-auto rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shadow-lg">
+            <span class="text-3xl font-bold">1</span>
+          </div>
+          <h3 class="mt-6 text-xl font-bold">Prompt Your Idea</h3>
+          <p class="mt-2 text-gray-600">Describe your avatar style or vibe in simple words.</p>
+        </div>
+        <div class="p-6 rounded-xl bg-white shadow hover:shadow-lg transition">
+          <div class="h-20 w-20 mx-auto rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shadow-lg">
+            <span class="text-3xl font-bold">2</span>
+          </div>
+          <h3 class="mt-6 text-xl font-bold">AI Generates It</h3>
+          <p class="mt-2 text-gray-600">Our advanced AI produces multiple avatars in seconds.</p>
+        </div>
+        <div class="p-6 rounded-xl bg-white shadow hover:shadow-lg transition">
+          <div class="h-20 w-20 mx-auto rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shadow-lg">
+            <span class="text-3xl font-bold">3</span>
+          </div>
+          <h3 class="mt-6 text-xl font-bold">Download & Print</h3>
+          <p class="mt-2 text-gray-600">Use your avatars for profiles or get them printed on gifts.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="bg-white py-20 sm:py-24 px-4" id="features">
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+      <div class="space-y-6">
+        <h2 class="text-3xl font-bold text-gray-900">Why ArtifyMe?</h2>
+        <ul class="space-y-4">
+          <li class="flex items-start">
+            <svg class="h-6 w-6 text-green-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            <span class="ml-3">100+ unique avatar styles: anime, cartoon, fantasy & more.</span>
+          </li>
+          <li class="flex items-start">
+            <svg class="h-6 w-6 text-green-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            <span class="ml-3">High-resolution downloads, ready for printing on gifts.</span>
+          </li>
+          <li class="flex items-start">
+            <svg class="h-6 w-6 text-green-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            <span class="ml-3">Fast, secure, and your data stays private.</span>
+          </li>
+        </ul>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <img src="https://cdn.pixabay.com/photo/2023/02/12/20/30/anime-7783727_960_720.png" alt="Cartoon Art" class="rounded-xl shadow-lg hover:scale-105 transform transition">
+        <img src="https://cdn.pixabay.com/photo/2022/11/19/14/16/anime-7602184_960_720.png" alt="Anime Avatar" class="rounded-xl shadow-lg hover:scale-105 transform transition">
+      </div>
+    </div>
+  </section>
 </main>
 
+<!-- Footer -->
 <footer class="bg-gray-900 text-white">
-    <div class="max-w-7xl mx-auto py-12 px-4 grid md:grid-cols-4 gap-8">
-        <div>
-            <h3 class="text-sm font-semibold">Solutions</h3>
-            <ul class="mt-4 space-y-2">
-                <li><a href="/avatar" class="hover:underline">AI Avatars</a></li>
-                <li><a href="/gifts" class="hover:underline">Gift Shop</a></li>
-            </ul>
-        </div>
-        <div>
-            <h3 class="text-sm font-semibold">Support</h3>
-            <ul class="mt-4 space-y-2">
-                <li><a href="/contact" class="hover:underline">Contact</a></li>
-                <li><a href="#" class="hover:underline">FAQ</a></li>
-            </ul>
-        </div>
-        <div>
-            <h3 class="text-sm font-semibold">Company</h3>
-            <ul class="mt-4 space-y-2">
-                <li><a href="#" class="hover:underline">About</a></li>
-                <li><a href="/terms" class="hover:underline">Terms of Service</a></li>
-                <li><a href="/privacy" class="hover:underline">Privacy Policy</a></li>
-            </ul>
-        </div>
-        <div>
-            <h3 class="text-sm font-semibold">Follow Us</h3>
-            <div class="mt-4 flex space-x-4">
-                <a href="#" class="hover:text-gray-400">Facebook</a>
-                <a href="#" class="hover:text-gray-400">Instagram</a>
-                <a href="#" class="hover:text-gray-400">Twitter</a>
-            </div>
-        </div>
+  <div class="max-w-7xl mx-auto py-12 px-4 grid md:grid-cols-4 gap-8">
+    <div>
+      <h3 class="text-sm font-semibold">Solutions</h3>
+      <ul class="mt-4 space-y-2">
+        <li><a href="/avatar" class="hover:underline">AI Avatars</a></li>
+        <li><a href="/gifts" class="hover:underline">Gift Shop</a></li>
+      </ul>
     </div>
-    <div class="border-t border-gray-700 py-4 text-center text-gray-400">
-        &copy; 2025 ArtifyMe. All Rights Reserved.
+    <div>
+      <h3 class="text-sm font-semibold">Support</h3>
+      <ul class="mt-4 space-y-2">
+        <li><a href="/contact" class="hover:underline">Contact</a></li>
+        <li><a href="#" class="hover:underline">FAQ</a></li>
+      </ul>
     </div>
+    <div>
+      <h3 class="text-sm font-semibold">Company</h3>
+      <ul class="mt-4 space-y-2">
+        <li><a href="#" class="hover:underline">About</a></li>
+        <li><a href="/terms" class="hover:underline">Terms of Service</a></li>
+        <li><a href="/privacy" class="hover:underline">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="text-sm font-semibold">Follow Us</h3>
+      <div class="mt-4 flex space-x-4">
+        <a href="#" class="hover:text-gray-400">Facebook</a>
+        <a href="#" class="hover:text-gray-400">Instagram</a>
+        <a href="#" class="hover:text-gray-400">Twitter</a>
+      </div>
+    </div>
+  </div>
+  <div class="border-t border-gray-700 py-4 text-center text-gray-400">
+    &copy; 2025 ArtifyMe. All Rights Reserved.
+  </div>
 </footer>
 
 <script>
-async function loadHomepageShops() {
+  // Mobile menu toggle
+  document.getElementById("menuBtn").addEventListener("click", () => {
+    const menu = document.getElementById("mobileMenu");
+    menu.classList.toggle("hidden");
+  });
+
+  // Load shops
+  async function loadHomepageShops() {
     const res = await fetch('/api/shops');
     const shops = await res.json();
-
     const homepageContainer = document.getElementById('homepageShops');
 
     homepageContainer.innerHTML = shops
-        .filter(shop => shop.show_on_homepage)
-        .map(shop => `
-            <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition flex flex-col justify-between">
-                <div>
-                    <img src="${shop.image || 'https://via.placeholder.com/300x200'}" class="w-full h-40 object-cover rounded-lg mb-4">
-                    <h3 class="text-xl font-semibold mb-2">${shop.name}</h3>
-                    <p class="text-gray-600 mb-3">${shop.location}</p>
-                </div>
-                <a href="/shop/${shop.id}" class="text-indigo-600 font-medium hover:underline mt-2">View Shop →</a>
-            </div>
-        `).join('');
-}
-
-loadHomepageShops();
+      .filter(shop => shop.show_on_homepage)
+      .map(shop => `
+        <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition flex flex-col justify-between">
+          <div>
+            <img src="${shop.image || 'https://via.placeholder.com/300x200'}" class="w-full h-40 object-cover rounded-lg mb-4">
+            <h3 class="text-xl font-semibold mb-2">${shop.name}</h3>
+            <p class="text-gray-600 mb-3">${shop.location}</p>
+          </div>
+          <a href="/shop/${shop.id}" class="text-indigo-600 font-medium hover:underline mt-2">View Shop →</a>
+        </div>
+      `).join('');
+  }
+  loadHomepageShops();
 </script>
-
 </body>
 </html>

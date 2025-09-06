@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop Details - Personalized Gifts</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        @keyframes pulse { 50% { opacity: .5; } }
-        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        .transition-all { transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); }
-        .bg-gradient-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop Details - Personalized Gifts</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    @keyframes pulse { 50% { opacity: .5; } }
+    .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    .transition-all { transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); }
+    .bg-gradient-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+</style>
 </head>
 <body class="min-h-screen bg-gray-50 text-gray-800 font-sans">
 
@@ -30,6 +30,7 @@
 
 <main class="max-w-6xl mx-auto p-4 md:p-6 space-y-8">
 
+    <!-- Shop Info -->
     <div id="shopInfoContainer" class="bg-white shadow-xl rounded-2xl overflow-hidden">
         <div id="shopInfoSkeleton" class="p-6 md:p-8">
             <div class="flex flex-col sm:flex-row items-center gap-6">
@@ -55,8 +56,12 @@
         </div>
     </div>
 
+    <!-- Products & Connections -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <!-- Left Column -->
         <div class="lg:col-span-4 space-y-8">
+            <!-- Connect -->
             <div class="bg-white shadow-xl rounded-2xl p-6">
                 <h3 class="text-xl font-bold text-indigo-800 mb-4 text-center">Connect with Us</h3>
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
@@ -75,6 +80,7 @@
                 </div>
             </div>
 
+            <!-- Best Product -->
             <div id="bestProductContainer" class="hidden bg-white shadow-xl rounded-2xl p-6 space-y-4">
                 <h3 class="text-xl font-bold text-amber-600 flex items-center gap-2"><i class="fa-solid fa-star text-amber-500"></i> Best Seller</h3>
                 <div class="flex items-center space-x-4">
@@ -86,18 +92,21 @@
                 </div>
             </div>
 
+            <!-- Map -->
             <div id="mapContainer" class="bg-white shadow-xl rounded-2xl overflow-hidden hidden">
                 <iframe id="shopMap" class="w-full h-72" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
 
+        <!-- Right Column - Products -->
         <div id="productsSection" class="lg:col-span-8 bg-white shadow-xl rounded-2xl p-6 md:p-8 hidden">
             <h3 class="text-2xl font-bold text-indigo-800 mb-6">Our Products</h3>
-            <div id="productsContainer" class="grid gap-x-4 gap-y-6 grid-cols-2 md:grid-cols-3 xl:grid-cols-4"></div>
+            <div id="productsContainer" class="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4"></div>
             <p id="productsError" class="hidden text-red-500">Could not load products.</p>
         </div>
     </div>
 
+    <!-- Reviews -->
     <div class="bg-white shadow-xl rounded-2xl p-6 md:p-8 space-y-6">
         <h3 class="text-2xl font-bold text-indigo-800">Customer Reviews</h3>
         <div id="reviewsContainer" class="space-y-4"></div>
@@ -112,6 +121,12 @@
     </div>
 </main>
 
+<!-- Image Modal -->
+<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+    <span id="closeModal" class="absolute top-4 right-6 text-white text-4xl cursor-pointer">&times;</span>
+    <img id="modalImage" src="" class="max-h-full max-w-full rounded shadow-lg">
+</div>
+
 <footer class="text-center text-gray-500 py-8 mt-10">
     &copy; 2025 AI Avatar Generator & Gift Shops. All Rights Reserved.
 </footer>
@@ -119,27 +134,46 @@
 <script>
 const shopId = {{ shop_id }};
 
+function ensureHttps(url) {
+    if (!url) return '';
+    return url.startsWith('http') ? url : 'https://' + url;
+}
+
 async function loadShop() {
     const res = await fetch(`/api/shops/${shopId}`);
     const shop = await res.json();
 
     document.getElementById('shopName').textContent = shop.name;
-    document.getElementById('shopLocation').querySelector('span').textContent = shop.location;
-    document.getElementById('shopDescription').textContent = shop.description;
-    document.getElementById('shopImage').src = shop.image;
-    document.getElementById('shopTimings').querySelector('span').textContent = shop.timings;
+    document.getElementById('shopLocation').querySelector('span').textContent = shop.location || '';
+    document.getElementById('shopDescription').textContent = shop.description || '';
+    document.getElementById('shopImage').src = shop.image || '';
+    document.getElementById('shopTimings').querySelector('span').textContent = shop.timings || '';
 
-    if(shop.whatsapp) document.getElementById('whatsappLink').href = shop.whatsapp, document.getElementById('whatsappLink').classList.remove('hidden');
-    if(shop.instagram) document.getElementById('instagramLink').href = shop.instagram, document.getElementById('instagramLink').classList.remove('hidden');
-    if(shop.link) document.getElementById('websiteLink').href = shop.link, document.getElementById('websiteLink').classList.remove('hidden');
+    function getWhatsappLink(number, message = "Hi, I am from Artifyy!") {
+        if (!number) return '#';
+        number = number.replace(/\D/g, '');
+        const encodedMessage = encodeURIComponent(message);
+        return `https://wa.me/${number}?text=${encodedMessage}`;
+    }
 
-    if(shop.best_product_name && shop.best_product_image) {
+    if (shop.whatsapp) {
+        document.getElementById('whatsappLink').href = getWhatsappLink(shop.whatsapp);
+        document.getElementById('whatsappLink').classList.remove('hidden');
+    }
+    if (shop.instagram) {
+        document.getElementById('instagramLink').href = ensureHttps(shop.instagram);
+        document.getElementById('instagramLink').classList.remove('hidden');
+    }
+    if (shop.website || shop.link) {
+        document.getElementById('websiteLink').href = ensureHttps(shop.website || shop.link);
+        document.getElementById('websiteLink').classList.remove('hidden');
+    }
+    if (shop.best_product_name && shop.best_product_image) {
         document.getElementById('bestProductName').textContent = shop.best_product_name;
         document.getElementById('bestProductImage').src = shop.best_product_image;
         document.getElementById('bestProductContainer').classList.remove('hidden');
     }
-
-    if(shop.map_url) {
+    if (shop.map_url) {
         document.getElementById('shopMap').src = shop.map_url;
         document.getElementById('mapContainer').classList.remove('hidden');
     }
@@ -153,38 +187,55 @@ async function loadProducts() {
     const products = await res.json();
 
     const container = document.getElementById('productsContainer');
-    products.forEach(p => {
-        container.insertAdjacentHTML('beforeend', `
-            <div>
-                <div class="bg-gray-50 rounded-lg overflow-hidden border group-hover:shadow-xl group-hover:-translate-y-1 transition-all">
-                    <img src="${p.image}" alt="${p.name}" class="w-full h-40 object-cover">
-                    <div class="p-4">
-                        <h4 class="font-bold text-gray-800 truncate">${p.name}</h4>
-                        <p class="text-sm text-gray-500">${p.description || ''}</p>
-                    </div>
+    container.innerHTML = '';
+
+    products.slice(0, 4).forEach(p => {
+        const imagesArray = Array.isArray(p.images) ? p.images : [p.image];
+
+        imagesArray.slice(0, 4).forEach(img => {
+            const div = document.createElement('div');
+            div.className = "bg-gray-50 rounded-xl border shadow-sm overflow-hidden cursor-pointer hover:shadow-lg transition-all";
+            div.innerHTML = `
+                <div class="w-full h-40 md:h-48">
+                    <img src="${img}" alt="${p.name}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                 </div>
-            </div>
-        `);
+                <div class="p-2 text-center">
+                    <h4 class="font-bold text-gray-800 truncate">${p.name}</h4>
+                </div>
+            `;
+            div.onclick = () => {
+                document.getElementById('modalImage').src = img;
+                document.getElementById('imageModal').classList.remove('hidden');
+            };
+            container.appendChild(div);
+        });
     });
 
-    document.getElementById('productsSection').classList.remove('hidden');
+    if (products.length) document.getElementById('productsSection').classList.remove('hidden');
 }
 
+// Close Modal
+document.getElementById('closeModal').onclick = () => {
+    document.getElementById('imageModal').classList.add('hidden');
+};
+
+// Load reviews
 async function loadReviews() {
     const res = await fetch(`/api/reviews?shop_id=${shopId}`);
     const reviews = await res.json();
-
     const container = document.getElementById('reviewsContainer');
+    container.innerHTML = '';
     reviews.forEach(r => {
         container.insertAdjacentHTML('beforeend', `
-            <div class="p-5 bg-indigo-50/50 border-l-4 border-indigo-500 rounded-r-lg">
+            <div class="p-5 bg-indigo-50/50 border-l-4 border-indigo-500 rounded-r-lg shadow-sm">
                 <p class="text-gray-700 italic">" ${r.review} "</p>
             </div>
         `);
     });
 }
 
-document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+// Submit review
+document.getElementById('reviewForm').addEventListener('submit', async e => {
     e.preventDefault();
     const text = document.getElementById('reviewText').value.trim();
     if (!text) return;
@@ -199,6 +250,7 @@ document.getElementById('reviewForm').addEventListener('submit', async (e) => {
     loadReviews();
 });
 
+// Initialize
 loadShop();
 loadProducts();
 loadReviews();

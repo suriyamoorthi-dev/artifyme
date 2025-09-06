@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎉 AI Celebration & Photography Ideas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+  </style>
+</head>
+<body class="text-slate-800">
+
+  <!-- Header -->
+  <header class="bg-white/80 backdrop-blur-md shadow sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
+      <h1 class="text-2xl font-extrabold text-pink-600">ArtifyMe</h1>
+      <nav class="hidden sm:flex space-x-6 text-slate-700 font-medium">
+        <a href="/" class="hover:text-indigo-600">Home</a>
+        <a href="#celebration-ideas" class="hover:text-pink-600">Ideas</a>
+        <a href="#about" class="hover:text-pink-600">About</a>
+      </nav>
+    </div>
+  </header>
+<!-- Back Button -->
+<a href="/" 
+  class="mt-4 mb-6 inline-block bg-gray-200 text-slate-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-300 shadow">
+  ← Back to Home
+</a>
+
+  <!-- Celebration Ideas Section -->
+  <section id="celebration-ideas" class="py-20 bg-gradient-to-b from-pink-50 via-white to-indigo-50">
+    <div class="max-w-5xl mx-auto text-center px-4">
+      <h2 class="text-4xl sm:text-5xl font-extrabold mb-6 text-slate-900">
+        🎉 Celebration & Photography Ideas
+      </h2>
+      <p class="text-lg sm:text-xl text-slate-600 mb-10">
+        Let AI suggest creative <span class="text-pink-600 font-semibold">decorations</span>, 
+        <span class="text-indigo-600 font-semibold">themes</span>, and 
+        <span class="text-yellow-500 font-semibold">photography concepts</span> 
+        for your special occasions.
+      </p>
+
+      <!-- AI Form -->
+      <form id="celebration-form" class="grid gap-4 sm:grid-cols-3 max-w-3xl mx-auto">
+        <select name="event" class="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 w-full">
+          <option value="">Choose Event</option>
+          <option>Birthday</option>
+          <option>Wedding</option>
+          <option>Festival</option>
+          <option>Photoshoot</option>
+          <option>Corporate</option>
+        </select>
+
+        <select name="style" class="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 w-full">
+          <option value="">Choose Style</option>
+          <option>Traditional</option>
+          <option>Modern</option>
+          <option>Fantasy</option>
+          <option>Anime</option>
+          <option>Cinematic</option>
+        </select>
+
+        <input type="text" name="extra" placeholder="Extra details (optional)" 
+          class="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 w-full"/>
+      </form>
+
+      <!-- CTA Button -->
+      <button id="celebrationBtn" 
+        class="mt-6 bg-gradient-to-r from-pink-600 to-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:scale-105 shadow-lg transition-transform">
+        🚀 Generate Ideas
+      </button>
+
+      <!-- Results -->
+      <div id="celebration-results" class="mt-12 text-left max-w-3xl mx-auto space-y-6"></div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="py-20 bg-white px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <h3 class="text-3xl sm:text-4xl font-bold mb-6 text-slate-900">About ArtifyMe</h3>
+      <p class="text-slate-600 text-lg leading-relaxed">
+        ArtifyMe uses advanced AI to bring your celebrations to life — from generating unique images 
+        to suggesting event themes and photography ideas. 
+        Let AI inspire your next <span class="text-pink-600 font-semibold">special moment</span> ✨
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm">
+    <p>&copy; 2025 ArtifyMe. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    document.getElementById("celebrationBtn").addEventListener("click", async (e) => {
+      e.preventDefault();
+      const event = document.querySelector("select[name='event']").value;
+      const style = document.querySelector("select[name='style']").value;
+      const extra = document.querySelector("input[name='extra']").value;
+
+      if (!event || !style) {
+        alert("Please select event & style!");
+        return;
+      }
+
+      const btn = e.target;
+      btn.disabled = true;
+      btn.innerText = "⏳ Generating...";
+
+      const res = await fetch("/api/generate-celebration-text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event, style, extra })
+      });
+
+      const data = await res.json();
+      btn.disabled = false;
+      btn.innerText = "🚀 Generate Ideas";
+
+      const container = document.getElementById("celebration-results");
+      container.innerHTML = "";
+      if (data.ideas) {
+        data.ideas.forEach((idea, i) => {
+          container.innerHTML += `
+            <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition duration-300">
+              <h4 class="font-bold text-lg mb-2 text-indigo-600">💡 Idea ${i+1}</h4>
+              <p class="text-slate-700 leading-relaxed">${idea}</p>
+            </div>`;
+        });
+      } else {
+        container.innerHTML = `<p class="text-red-500">❌ Error: ${data.error || "Try again later."}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>

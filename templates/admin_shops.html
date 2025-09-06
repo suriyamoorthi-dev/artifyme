@@ -16,10 +16,16 @@
     <input id="shopName" placeholder="Shop Name *" class="w-full p-3 border rounded-lg">
     <input id="location" placeholder="Location *" class="w-full p-3 border rounded-lg">
     <input id="contact" placeholder="Contact Number *" class="w-full p-3 border rounded-lg">
-    <input id="link" placeholder="Website or WhatsApp Link *" class="w-full p-3 border rounded-lg">
+    
+    <!-- ✅ New Fields -->
+    <input id="whatsapp" placeholder="WhatsApp Number (optional)" class="w-full p-3 border rounded-lg">
+    <input id="instagram" placeholder="Instagram Profile Link (optional)" class="w-full p-3 border rounded-lg">
+    <input id="website" placeholder="Website Link (optional)" class="w-full p-3 border rounded-lg">
+    
     <input id="image" placeholder="Image URL (optional)" class="w-full p-3 border rounded-lg">
     <input id="map" placeholder="Google Maps Embed URL (optional)" class="w-full p-3 border rounded-lg">
     <input id="timings" placeholder="Shop Timings (optional)" class="w-full p-3 border rounded-lg">
+    
     <button id="saveShop" class="w-full bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700">Save Shop</button>
 </div>
 
@@ -109,12 +115,16 @@
 </div>
 
 <script>
-// DOM References
+// -------------------- DOM References --------------------
 const shopId = document.getElementById('shopId');
 const shopName = document.getElementById('shopName');
 const locationInput = document.getElementById('location');
 const contact = document.getElementById('contact');
-const link = document.getElementById('link');
+
+const whatsapp = document.getElementById('whatsapp');
+const instagram = document.getElementById('instagram');
+const website = document.getElementById('website'); // input remains, backend uses 'link'
+
 const image = document.getElementById('image');
 const map = document.getElementById('map');
 const timings = document.getElementById('timings');
@@ -135,7 +145,8 @@ const offerPercentage = document.getElementById('offerPercentage');
 const offerShopSelect = document.getElementById('offerShopSelect');
 const offerList = document.getElementById('offerList');
 
-// Fetch & Render Shops
+
+// -------------------- Shop Functions --------------------
 async function fetchShops() {
     const res = await fetch('/api/shops');
     const shops = await res.json();
@@ -145,7 +156,11 @@ async function fetchShops() {
             <td class="p-2 font-medium">${s.name}</td>
             <td class="p-2">${s.location}</td>
             <td class="p-2">${s.contact}</td>
-            <td class="p-2"><a href="${s.link}" target="_blank" class="text-blue-600 hover:underline">View</a></td>
+            <td class="p-2 space-x-2">
+                ${s.whatsapp ? `<a href="${s.whatsapp}" target="_blank" class="text-green-600 font-medium">WhatsApp</a>` : ''}
+                ${s.instagram ? `<a href="${s.instagram}" target="_blank" class="text-pink-600 font-medium">Instagram</a>` : ''}
+                ${s.link ? `<a href="${s.link}" target="_blank" class="text-blue-600 font-medium">Website</a>` : ''}
+            </td>
             <td class="p-2 space-x-2">
                 <button onclick="editShop(${s.id})" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
                 <button onclick="deleteShop(${s.id})" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
@@ -173,7 +188,9 @@ async function editShop(id) {
         shopName.value = s.name;
         locationInput.value = s.location;
         contact.value = s.contact;
-        link.value = s.link;
+        whatsapp.value = s.whatsapp || '';
+        instagram.value = s.instagram || '';
+        website.value = s.link || ''; // map 'link' to website input
         image.value = s.image || '';
         map.value = s.map_url || '';
         timings.value = s.timings || '';
@@ -189,16 +206,45 @@ async function deleteShop(id) {
 }
 
 document.getElementById('saveShop').onclick = async () => {
-    if (!shopName.value || !locationInput.value || !contact.value || !link.value) return alert('Fill all required fields');
-    const data = { name: shopName.value, location: locationInput.value, contact: contact.value, link: link.value, image: image.value, map_url: map.value, timings: timings.value };
+    if (!shopName.value || !locationInput.value || !contact.value) {
+        return alert('Fill all required fields');
+    }
+
+    const data = { 
+        name: shopName.value, 
+        location: locationInput.value, 
+        contact: contact.value, 
+        whatsapp: whatsapp.value, 
+        instagram: instagram.value, 
+        link: website.value,   // ✅ send 'link' to match DB
+        image: image.value, 
+        map_url: map.value, 
+        timings: timings.value 
+    };
+
     const method = shopId.value ? 'PUT' : 'POST';
     const url = shopId.value ? `/api/shops/${shopId.value}` : '/api/shops';
+
+    if (shopId.value && !confirm('Update this shop?')) return;
+
     await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-    shopId.value = shopName.value = locationInput.value = contact.value = link.value = image.value = map.value = timings.value = '';
+    alert(shopId.value ? "Shop updated!" : "Shop added!");
+
+    shopId.value = '';
+    shopName.value = '';
+    locationInput.value = '';
+    contact.value = '';
+    whatsapp.value = '';
+    instagram.value = '';
+    website.value = '';
+    image.value = '';
+    map.value = '';
+    timings.value = '';
+
     fetchShops();
 };
 
-// Product Functions
+// -------------------- Product Functions --------------------
 async function fetchProducts() {
     const res = await fetch('/api/products');
     const products = await res.json();
@@ -215,7 +261,56 @@ async function fetchProducts() {
     `).join('');
 }
 
-// Offer Functions
+async function editProduct(id) {
+    const res = await fetch(`/api/products/${id}`);
+    if (res.ok) {
+        const p = await res.json();
+        productId.value = p.id;
+        productName.value = p.name;
+        productImage.value = p.image;
+        productDescription.value = p.description || '';
+        productShopSelect.value = p.shop_id;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+async function deleteProduct(id) {
+    if (confirm('Delete this product?')) {
+        await fetch(`/api/products/${id}`, { method: 'DELETE' });
+        fetchProducts();
+    }
+}
+
+document.getElementById('saveProduct').onclick = async () => {
+    if (!productName.value.trim() || !productImage.value.trim() || !productShopSelect.value) {
+        return alert('Please fill all required fields');
+    }
+
+    const productData = {
+        name: productName.value.trim(),
+        image: productImage.value.trim(),
+        description: productDescription.value.trim(),
+        shop_id: productShopSelect.value
+    };
+
+    const method = productId.value ? 'PUT' : 'POST';
+    const url = productId.value ? `/api/products/${productId.value}` : '/api/products';
+
+    if (productId.value && !confirm('Update this product?')) return;
+
+    await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productData) });
+    alert(productId.value ? "Product updated!" : "Product added!");
+
+    productId.value = '';
+    productName.value = '';
+    productImage.value = '';
+    productDescription.value = '';
+    productShopSelect.value = '';
+
+    fetchProducts();
+};
+
+// -------------------- Offer Functions --------------------
 async function fetchOffers() {
     const res = await fetch('/api/offers');
     const offers = await res.json();
@@ -232,25 +327,56 @@ async function fetchOffers() {
     `).join('');
 }
 
+async function editOffer(id) {
+    const res = await fetch(`/api/offers/${id}`);
+    if (res.ok) {
+        const o = await res.json();
+        offerId.value = o.id;
+        offerTitle.value = o.title;
+        offerImage.value = o.image;
+        offerPercentage.value = o.percentage || '';
+        offerShopSelect.value = o.shop_id;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+async function deleteOffer(id) {
+    if (confirm('Delete this offer?')) {
+        await fetch(`/api/offers/${id}`, { method: 'DELETE' });
+        fetchOffers();
+    }
+}
+
 document.getElementById('saveOffer').onclick = async () => {
     if (!offerTitle.value.trim() || !offerImage.value.trim() || !offerShopSelect.value) {
         return alert('Please fill all required fields');
     }
+
     const offerData = {
         title: offerTitle.value.trim(),
         image: offerImage.value.trim(),
         percentage: offerPercentage.value.trim(),
         shop_id: offerShopSelect.value
     };
+
     const method = offerId.value ? 'PUT' : 'POST';
     const url = offerId.value ? `/api/offers/${offerId.value}` : '/api/offers';
+
     if (offerId.value && !confirm('Update this offer?')) return;
+
     await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(offerData) });
     alert(offerId.value ? 'Offer updated!' : 'Offer added!');
-    offerId.value = offerTitle.value = offerImage.value = offerPercentage.value = offerShopSelect.value = '';
+
+    offerId.value = '';
+    offerTitle.value = '';
+    offerImage.value = '';
+    offerPercentage.value = '';
+    offerShopSelect.value = '';
+
     fetchOffers();
 };
 
+// -------------------- Homepage Toggle --------------------
 async function toggleShopHomepage(shopId, show) {
     await fetch(`/api/shops/${shopId}`, {
         method: 'PUT',
@@ -260,7 +386,7 @@ async function toggleShopHomepage(shopId, show) {
     fetchShops();
 }
 
-// Initial Load
+// -------------------- Initial Load --------------------
 fetchShops();
 fetchProducts();
 fetchOffers();

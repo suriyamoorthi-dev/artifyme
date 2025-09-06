@@ -66,6 +66,7 @@ def terms():
 @app.route('/privacy')
 def privacy():
     return render_template('privacy.html')
+
 def generate_ai_avatar(prompt_text):
     try:
         response = requests.post(
@@ -116,11 +117,12 @@ def generate_ai_avatar(prompt_text):
         return None
 
 
-
-# 🚀 Flask Route for API
 @app.route('/api/generate-avatar', methods=['POST'])
 def api_generate_avatar():
-    data = request.get_json()
+    data = request.get_json(silent=True)  # ✅ avoid crashing if not JSON
+    if not data:
+        return jsonify({"error": "Invalid or missing JSON"}), 400
+
     prompt = data.get("prompt")
     if not prompt:
         return jsonify({"error": "Prompt required"}), 400
@@ -175,7 +177,7 @@ def place_order():
 
 # ------------------- Supabase Gift Shop API ------------------- #
 
-# --------------------- Admin Shop Page ---------------------
+# --------------------- Admin Page ---------------------
 @app.route('/admin/shops')
 def admin_shops():
     return render_template('admin_shops.html')
@@ -188,24 +190,32 @@ def get_all_shops():
     return jsonify(response.data or [])
 
 
+# ✅ Add Shop (with socials, map, timings, homepage flag)
 @app.route('/api/shops', methods=['POST'])
 def add_shop():
     data = request.json
-    required_fields = ['name', 'location', 'contact', 'link']
+    required_fields = ['name', 'location', 'contact']
     if not all(field in data for field in required_fields):
-        return "Missing fields", 400
+        return jsonify({"error": "Missing fields"}), 400
 
-    supabase.table('gift_shops').insert([{
+    shop_data = {
         "name": data['name'],
         "location": data['location'],
         "contact": data['contact'],
-        "link": data['link'],
-        "image": data.get('image', '')
-    }]).execute()
+        "whatsapp": data.get('whatsapp'),
+        "instagram": data.get('instagram'),
+        "website": data.get('website'),
+        "image": data.get('image'),
+        "map_url": data.get('map_url'),
+        "timings": data.get('timings'),
+        "show_on_homepage": bool(data.get('show_on_homepage', False))
+    }
 
+    supabase.table('gift_shops').insert([shop_data]).execute()
     return jsonify({"status": "success"})
 
 
+# ✅ Get single shop
 @app.route('/api/shops/<int:shop_id>', methods=['GET'])
 def get_shop(shop_id):
     response = supabase.table('gift_shops').select('*').eq('id', shop_id).single().execute()
@@ -214,13 +224,32 @@ def get_shop(shop_id):
     return jsonify({'error': 'Shop not found'}), 404
 
 
+# ✅ Update shop
+
 @app.route('/api/shops/<int:shop_id>', methods=['PUT'])
 def update_shop(shop_id):
     data = request.json
-    supabase.table('gift_shops').update(data).eq('id', shop_id).execute()
+    shop_data = {}
+
+    allowed_fields = [
+        "name", "location", "contact", "whatsapp", "instagram",
+        "website", "image", "map_url", "timings", "show_on_homepage"
+    ]
+
+    for field in allowed_fields:
+        if field in data:   # ✅ only update fields that are sent
+            if field == "show_on_homepage":
+                shop_data[field] = bool(data[field])
+            else:
+                shop_data[field] = data[field]
+
+    if not shop_data:
+        return jsonify({"error": "No valid fields provided"}), 400
+
+    supabase.table('gift_shops').update(shop_data).eq('id', shop_id).execute()
     return jsonify({"status": "updated"})
 
-
+# ✅ Delete shop
 @app.route('/api/shops/<int:shop_id>', methods=['DELETE'])
 def delete_shop(shop_id):
     supabase.table('gift_shops').delete().eq('id', shop_id).execute()
@@ -234,27 +263,48 @@ def shop_page(shop_id):
 
 
 # --------------------- Shop Product API ---------------------
+
 @app.route('/api/shops/<int:shop_id>/products', methods=['GET'])
 def get_shop_products(shop_id):
-    response = supabase.table('shop_products').select('*').eq('shop_id', shop_id).order('id', desc=True).execute()
-    return jsonify(response.data or [])
+    # 1. Get all products for this shop
+    products_res = supabase.table('shop_products').select('*').eq('shop_id', shop_id).execute()
+    products = products_res.data or []
 
+    # 2. For each product, get its images
+    for p in products:
+        images_res = supabase.table('product_images').select('image_url').eq('product_id', p['id']).execute()
+        p['images'] = [img['image_url'] for img in images_res.data]
+
+        # Add main image also
+        if p.get('image'):
+            p['images'].insert(0, p['image'])
+
+    return jsonify(products)
 
 @app.route('/api/products', methods=['POST'])
 def add_product():
     data = request.json
-    required_fields = ['shop_id', 'name', 'image', 'description']
+    required_fields = ['shop_id', 'name', 'images', 'description']  # images is now a list
     if not all(field in data for field in required_fields):
         return "Missing fields", 400
 
-    supabase.table('shop_products').insert({
+    # 1️⃣ Insert into shop_products
+    res = supabase.table('shop_products').insert({
         'shop_id': data['shop_id'],
         'name': data['name'],
-        'image': data['image'],
         'description': data['description']
     }).execute()
 
-    return jsonify({'status': 'success'})
+    if not res.data:
+        return "Failed to insert product", 500
+
+    product_id = res.data[0]['id']
+
+    # 2️⃣ Insert multiple images into product_images
+    images_data = [{'product_id': product_id, 'image_url': url} for url in data['images']]
+    supabase.table('product_images').insert(images_data).execute()
+
+    return jsonify({'status': 'success', 'product_id': product_id})
 
 
 @app.route('/api/products/<int:product_id>', methods=['PUT'])
@@ -293,9 +343,12 @@ def post_review():
     }).execute()
 
     return jsonify({'message': 'Review added'}), 201
+
+
+# --------------------- Offers API ---------------------
 @app.route('/api/offers')
 def get_offers():
-    response = supabase.table('shop_offers').select('*, gift_shops(name, link)').execute()
+    response = supabase.table('shop_offers').select('*, gift_shops(name, website)').execute()
     
     offers = []
     for o in response.data:
@@ -307,13 +360,14 @@ def get_offers():
             "image": o.get('image', ''),
             "shop_id": o['shop_id'],
             "shop_name": shop_data.get('name', ''),
-            "shop_url": shop_data.get('link', f"/shop/{o['shop_id']}"),
+            "shop_url": shop_data.get('website', f"/shop/{o['shop_id']}"),
             "description": o.get('description', ''),
             "color": o.get('color', 'bg-white'),
             "percentage": o.get('percentage', '')
         })
         
     return jsonify(offers)
+
 
 @app.route('/api/offers', methods=['POST'])
 def add_offer():
@@ -323,7 +377,8 @@ def add_offer():
         "description": data.get('description', ''),
         "color": data.get('color', 'bg-white'),
         "shop_id": data.get('shop_id'),
-        "percentage": data.get('percentage', '')
+        "percentage": data.get('percentage', ''),
+        "image": data.get('image', '')
     }).execute()
     return jsonify({"status": "added"})
 
@@ -336,15 +391,57 @@ def update_offer(offer_id):
         "description": data.get('description', ''),
         "color": data.get('color', 'bg-white'),
         "shop_id": data.get('shop_id'),
-        "percentage": data.get('percentage', '')
+        "percentage": data.get('percentage', ''),
+        "image": data.get('image', '')
     }).eq('id', offer_id).execute()
     return jsonify({"status": "updated"})
+
 
 @app.route('/api/offers/<int:offer_id>', methods=['DELETE'])
 def delete_offer(offer_id):
     supabase.table('shop_offers').delete().eq('id', offer_id).execute()
     return jsonify({"status": "deleted"})
 
+
+# --------------------- celebration ---------------------
+
+@app.route("/celebration")
+def celebration_page():
+    return render_template("celebration.html")
+
+@app.route("/api/generate-celebration-text", methods=["POST"])
+def generate_celebration_text():
+    data = request.get_json()
+    event = data.get("event")
+    style = data.get("style")
+    extra = data.get("extra", "")
+
+    if not event or not style:
+        return jsonify({"error": "Event and style are required"}), 400
+
+    prompt = f"Suggest 3 unique {style} style ideas for a {event} celebration. Include decorations, theme, and photography ideas. Extra details: {extra}"
+
+    try:
+        response = requests.post(
+            "https://api.together.xyz/v1/chat/completions",
+            headers={"Authorization": f"Bearer {TOGETHER_API_KEY}"},
+            json={
+                "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": 300
+            },
+            timeout=60
+        )
+        result = response.json()
+        text = result["choices"][0]["message"]["content"]
+
+        # Split into ideas
+        ideas = [line.strip("•-123. ") for line in text.split("\n") if line.strip()]
+        return jsonify({"ideas": ideas})
+
+    except Exception as e:
+        print("❌ Error:", e)
+        return jsonify({"error": "Generation failed"}), 500
 
 # ------------------- End Supabase Gift Shop API ------------------- #
 if __name__ == '__main__':
