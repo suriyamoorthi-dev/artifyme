@@ -419,7 +419,26 @@ def generate_celebration_text():
     if not event or not style:
         return jsonify({"error": "Event and style are required"}), 400
 
-    prompt = f"Suggest 3 unique {style} style ideas for a {event} celebration. Include decorations, theme, and photography ideas. Extra details: {extra}"
+    # ✅ Improved, structured prompt
+    prompt = f"""
+You are an expert event planner and designer. 
+
+Task: Suggest exactly 3 unique celebration ideas for a {event}.
+
+Requirements for each idea:
+1. Provide a creative theme name.
+2. Suggest decorations, color palette, and props.
+3. Include photography concepts for memorable shots.
+4. Mention any extra unique elements or experiences.
+
+Style: {style}
+Extra details or preferences: {extra}
+
+Output format (strictly):
+- Idea 1: <theme name> | Decorations: ... | Photography: ... | Extra: ...
+- Idea 2: <theme name> | Decorations: ... | Photography: ... | Extra: ...
+- Idea 3: <theme name> | Decorations: ... | Photography: ... | Extra: ...
+"""
 
     try:
         response = requests.post(
@@ -428,20 +447,39 @@ def generate_celebration_text():
             json={
                 "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
                 "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 300
+                "max_tokens": 400
             },
             timeout=60
         )
         result = response.json()
         text = result["choices"][0]["message"]["content"]
 
-        # Split into ideas
-        ideas = [line.strip("•-123. ") for line in text.split("\n") if line.strip()]
+        # ✅ Parse structured ideas
+        ideas = []
+        for line in text.split("\n"):
+            line = line.strip()
+            if not line or not line.startswith("- Idea"):
+                continue
+            try:
+                # Example: "- Idea 1: Enchanted Garden | Decorations: ... | Photography: ... | Extra: ..."
+                parts = line.split("|")
+                idea_dict = {
+                    "theme": parts[0].split(":")[1].strip(),
+                    "decorations": parts[1].replace("Decorations:", "").strip() if len(parts) > 1 else "",
+                    "photography": parts[2].replace("Photography:", "").strip() if len(parts) > 2 else "",
+                    "extra": parts[3].replace("Extra:", "").strip() if len(parts) > 3 else ""
+                }
+                ideas.append(idea_dict)
+            except Exception as e:
+                # Skip malformed lines
+                continue
+
         return jsonify({"ideas": ideas})
 
     except Exception as e:
         print("❌ Error:", e)
         return jsonify({"error": "Generation failed"}), 500
+
 
 # ------------------- End Supabase Gift Shop API ------------------- #
 if __name__ == '__main__':
