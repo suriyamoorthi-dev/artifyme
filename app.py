@@ -480,6 +480,10 @@ Output format (strictly):
         print("❌ Error:", e)
         return jsonify({"error": "Generation failed"}), 500
 
+@app.route("/advertise")
+def advertise():
+    # Render the HTML page (save the HTML as templates/advertise.html)
+    return render_template("advertise.html")
 
 # ------------------- End Supabase Gift Shop API ------------------- #
 if __name__ == '__main__':

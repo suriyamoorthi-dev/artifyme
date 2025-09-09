@@ -1,237 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ArtifyMe - AI Image Generator & Promotions</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-<style>
-  body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-  .gradient-text { background: linear-gradient(to right, #4f46e5, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .nav-link { transition: color 0.2s ease-in-out; }
-  .nav-link:hover { color: #ec4899; }
 
-  /* ✅ Mobile menu links animation */
-  .mobile-nav-link {
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: all 0.3s ease;
-  }
-  .mobile-nav-link.show {
-    max-height: 40px;
-    opacity: 1;
-  }
-</style>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ArtifyMe - AI Image Generator & Promotions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    .gradient-text { background: linear-gradient(to right, #4f46e5, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-link { transition: color 0.2s ease-in-out; }
+    .nav-link:hover { color: #ec4899; }
+
+    .mobile-nav-link {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .mobile-nav-link.show {
+      max-height: 40px;
+      opacity: 1;
+    }
+  </style>
 </head>
+
 <body class="text-slate-800">
 
-<header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto flex justify-between items-center p-4 px-6">
-    <h1 class="text-2xl font-bold text-indigo-600 cursor-pointer">ArtifyMe</h1>
-    
-    <!-- Desktop Menu -->
-    <nav class="space-x-8 hidden sm:flex">
+  <!-- Header -->
+  <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center p-4 px-6">
+      <h1 class="text-2xl font-bold text-indigo-600 cursor-pointer">ArtifyMe</h1>
+
+      <!-- Desktop Menu -->
+      <nav class="space-x-8 hidden sm:flex">
+        <a href="/" class="hover:text-indigo-600">Home</a>
+        <a href="#sample-gallery" class="nav-link font-medium">Gallery</a>
+        <a href="/celebration" class="nav-link font-medium">How It Works</a>
+        <a href="#about" class="nav-link font-medium">About</a>
+        <a href="/advertise" class="nav-link font-medium">Advertise</a>
+        <a href="/gifts" class="nav-link font-medium">Celebration Hub</a>
+      </nav>
+
+      <!-- Mobile Menu Button -->
+      <button id="menu-btn" class="sm:hidden flex items-center justify-center w-10 h-10 rounded-md border border-slate-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="flex-col px-5 py-4 bg-white shadow-md md:hidden text-lg font-medium hidden">
       <a href="/" class="hover:text-indigo-600">Home</a>
-      <a href="#sample-gallery" class="nav-link font-medium">Gallery</a>
-      <a href="/celebration" class="nav-link font-medium">How It Works</a>
-      <a href="#about" class="nav-link font-medium">About</a>
-      <a href="#advertise" class="nav-link font-medium">Advertise</a>
-    </nav>
+      <a href="#sample-gallery" class="nav-link mobile-nav-link block py-2">Gallery</a>
+      <a href="/celebration" class="nav-link mobile-nav-link block py-2">Generate Ideas</a>
+      <a href="#about" class="nav-link mobile-nav-link block py-2">About</a>
+      <a href="#advertise" class="nav-link mobile-nav-link block py-2">Advertise</a>
+      <a href="/gifts" class="nav-link mobile-nav-link block py-2">Celebration Hub</a>
+    </div>
+  </header>
 
-    <!-- ✅ Mobile Menu Button -->
-    <button id="menu-btn" class="sm:hidden flex items-center justify-center w-10 h-10 rounded-md border border-slate-300">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-      </svg>
-    </button>
-  </div>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-  <!-- ✅ Mobile Menu -->
-  <div id="mobile-menu" class="flex-col px-5 py-4 bg-white shadow-md md:hidden text-lg font-medium hidden">
-   <a href="/" class="hover:text-indigo-600">Home</a>
-    <a href="#sample-gallery" class="nav-link mobile-nav-link block py-2">Gallery</a>
-    <a href="/celebration" class="nav-link mobile-nav-link block py-2">generate ideas</a>
-    <a href="#about" class="nav-link mobile-nav-link block py-2">About</a>
-    <a href="#advertise" class="nav-link mobile-nav-link block py-2">Advertise</a>
-    <a href="/gifts" class="nav-link mobile-nav-link block py-2">Celebration Hub</a>
-  </div>
-</header>
-
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-  <!-- ✅ Hero Section -->
-  <section id="hero" class="text-center py-20 sm:py-28 bg-gradient-to-b from-white to-slate-50">
+    <!-- Hero Section -->
+    
+    <!-- Hero Section -->
+<section id="hero" class="text-center py-20 sm:py-28 bg-gradient-to-b from-white to-slate-50">
+  <div class="max-w-3xl mx-auto">
     <h2 class="text-4xl md:text-6xl font-extrabold tracking-tight">
       Unleash Your Creativity with <span class="gradient-text">AI Images</span>
     </h2>
-    <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">
-      Generate stunning, unique images for any occasion in seconds. Just describe what you envision, and let our AI bring it to life.
+    <p class="mt-4 text-lg text-slate-600">
+      Generate stunning, unique images for any occasion in seconds. Describe your vision, and let our AI bring it to life.
     </p>
 
-    <!-- ✅ AI Prompt Form -->
+    <!-- AI Prompt Form -->
     <form id="avatar-form" class="flex flex-col sm:flex-row gap-3 w-full max-w-2xl mx-auto mt-10">
-      <input type="text" name="prompt" placeholder="e.g., A futuristic cityscape at sunset" 
-             class="flex-grow px-5 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow shadow-sm" required/>
-      <button type="submit" id="generateBtn" 
-              class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 disabled:bg-indigo-400 transition-all shadow-lg hover:shadow-indigo-300">
+      <input type="text" name="prompt" placeholder="e.g., A futuristic cityscape at sunset"
+             class="flex-grow px-5 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" required />
+      <button type="submit" id="generateBtn"
+              class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 disabled:bg-indigo-400 transition-all shadow-lg">
         Generate
       </button>
     </form>
-     <a href="/celebration" class="flex items-center gap-3 bg-gradient-to-r from-pink-500 to-yellow-400 text-white px-6 py-3 rounded-lg shadow-lg hover:scale-105 transform transition-all font-semibold">
+  </div>
+</section>
+
+<!-- Celebration Ideas Section -->
+<section class="py-16 bg-gradient-to-br from-pink-100 via-white to-yellow-100 text-center">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-3xl font-extrabold text-gray-900 mb-6">✨ Need Celebration Ideas?</h2>
+    <p class="text-lg text-gray-700 mb-8">
+      Let our powerful AI suggest creative themes, decorations, and photography concepts for your next big event.
+    </p>
+    <a href="/celebration"
+       class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 to-yellow-400 text-white px-8 py-4 rounded-lg shadow-lg hover:scale-105 transform transition-all font-semibold">
       🎉 Generate Celebration Ideas
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
       </svg>
     </a>
   </div>
-  </section>
-
-  <!-- ✅ How It Works Section -->
-  <section id="how-it-works" class="py-20 bg-gradient-to-b from-slate-50 to-white">
-  <div class="max-w-6xl mx-auto text-center px-6">
-    <h3 class="text-4xl font-extrabold mb-6 text-slate-800">⚙️ How Our AI Works</h3>
-    <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">
-      Turn your imagination into reality with just a few words! If an error occurs, just wait a bit and try again —
-      every retry gives you a brand-new image ✨
-    </p>
-
-    <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
-      <!-- Step 1 -->
-      <div class="relative p-6 rounded-2xl bg-white shadow-lg border-t-4 border-indigo-500 hover:shadow-xl transition">
-        <div class="text-indigo-600 text-3xl mb-4">✍️</div>
-        <h4 class="text-xl font-semibold mb-2">Enter Your Prompt</h4>
-        <p class="text-slate-600">Describe your imagination in words — the more creative, the better!</p>
-      </div>
-
-      <!-- Step 2 -->
-      <div class="relative p-6 rounded-2xl bg-white shadow-lg border-t-4 border-pink-500 hover:shadow-xl transition">
-        <div class="text-pink-500 text-3xl mb-4">🤖</div>
-        <h4 class="text-xl font-semibold mb-2">AI Creates</h4>
-        <p class="text-slate-600">Our AI transforms your text into stunning artwork.</p>
-      </div>
-
-      <!-- Step 3 -->
-      <div class="relative p-6 rounded-2xl bg-white shadow-lg border-t-4 border-green-500 hover:shadow-xl transition">
-        <div class="text-green-500 text-3xl mb-4">🎁</div>
-        <h4 class="text-xl font-semibold mb-2">Use & Decorate</h4>
-        <p class="text-slate-600">Download your art or turn it into posters, mugs & gifts.</p>
-      </div>
-
-      <!-- Step 4 -->
-      <div class="relative p-6 rounded-2xl bg-white shadow-lg border-t-4 border-red-500 hover:shadow-xl transition">
-        <div class="text-red-500 text-3xl mb-4">⚠️</div>
-        <h4 class="text-xl font-semibold mb-2">AI Failed?</h4>
-        <p class="text-slate-600">Wait 60s & try again — servers may be busy. You’ll still get something new!</p>
-      </div>
-    </div>
-  </div>
 </section>
 
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-20 bg-gradient-to-b from-slate-50 to-white">
+      <div class="max-w-6xl mx-auto text-center px-6">
+        <h3 class="text-4xl font-extrabold mb-6 text-slate-800">⚙️ How Our AI Works</h3>
+        <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">
+          Describe your imagination, and our AI transforms it into stunning artwork. Wait 60s & retry if needed.
+        </p>
 
-  <!-- ✅ Sample Images Section -->
-  <section id="sample-gallery" class="py-16 bg-white">
-    <div class="max-w-6xl mx-auto px-4">
-      <h3 class="text-3xl font-bold text-center mb-10 text-slate-800">✨ Sample AI Creations</h3>
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-        <img src="https://mmhvljqdyzskxnzkrgql.supabase.co/storage/v1/object/public/avatars/avatar_1757058837.jpg" alt="Sample 1" class="w-full h-48 object-cover rounded-2xl shadow-md">
-        <img src="https://mmhvljqdyzskxnzkrgql.supabase.co/storage/v1/object/public/avatars/avatar_1756905669.jpg" alt="Sample 2" class="w-full h-48 object-cover rounded-2xl shadow-md">
-        <img src="https://mmhvljqdyzskxnzkrgql.supabase.co/storage/v1/object/public/avatars/avatar_1757128089.jpg" alt="Sample 3" class="w-full h-48 object-cover rounded-2xl shadow-md">
-        <img src="https://mmhvljqdyzskxnzkrgql.supabase.co/storage/v1/object/public/avatars/avatar_1757127958.jpg" alt="Sample 4" class="w-full h-48 object-cover rounded-2xl shadow-md">
-        <img src="https://mmhvljqdyzskxnzkrgql.supabase.co/storage/v1/object/public/avatars/avatar_1756017013.jpg" alt="Sample 5" class="w-full h-48 object-cover rounded-2xl shadow-md">
-        <img src="https://mmhvljqdyzskxnzkrgql.supabase.co/storage/v1/object/public/avatars/avatar_1756906853.jpg" alt="Sample 6" class="w-full h-48 object-cover rounded-2xl shadow-md">
-        <img src="https://mmhvljqdyzskxnzkrgql.supabase.co/storage/v1/object/public/avatars/avatar_1756905333.jpg" alt="Sample 7" class="w-full h-48 object-cover rounded-2xl shadow-md">
+        <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
+          <div class="p-6 rounded-2xl bg-white shadow-lg border-t-4 border-indigo-500 hover:shadow-xl transition">
+            <div class="text-indigo-600 text-3xl mb-4">✍️</div>
+            <h4 class="text-xl font-semibold mb-2">Enter Prompt</h4>
+            <p class="text-slate-600">Describe your vision in detail for best results.</p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-white shadow-lg border-t-4 border-pink-500 hover:shadow-xl transition">
+            <div class="text-pink-500 text-3xl mb-4">🤖</div>
+            <h4 class="text-xl font-semibold mb-2">AI Creates</h4>
+            <p class="text-slate-600">AI instantly converts text into digital art.</p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-white shadow-lg border-t-4 border-green-500 hover:shadow-xl transition">
+            <div class="text-green-500 text-3xl mb-4">🎁</div>
+            <h4 class="text-xl font-semibold mb-2">Use & Decorate</h4>
+            <p class="text-slate-600">Download or print your custom artwork as gifts.</p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-white shadow-lg border-t-4 border-red-500 hover:shadow-xl transition">
+            <div class="text-red-500 text-3xl mb-4">⚠️</div>
+            <h4 class="text-xl font-semibold mb-2">AI Failed?</h4>
+            <p class="text-slate-600">Wait a minute and retry for a new result.</p>
+          </div>
+        </div>
       </div>
-      <p class="mt-8 text-center text-slate-500 text-sm">
-        These are just examples — your AI images will be <span class="font-semibold">unique to your prompt</span>.
-      </p>
+    </section>
+
+    <!-- Sample Gallery -->
+    <section id="sample-gallery" class="py-16 bg-white">
+      <div class="max-w-6xl mx-auto px-4">
+        <h3 class="text-3xl font-bold text-center mb-10 text-slate-800">✨ Sample AI Creations</h3>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+          <img src="https://mmhvljqdyzskxnzkrgql.supabase.co/storage/v1/object/public/avatars/avatar_1757058837.jpg" alt="Sample 1" class="w-full h-48 object-cover rounded-2xl shadow-md">
+          <img src="https://mmhvljqdyzskxnzkrgql.supabase.co/storage/v1/object/public/avatars/avatar_1756905669.jpg" alt="Sample 2" class="w-full h-48 object-cover rounded-2xl shadow-md">
+          <img src="https://mmhvljqdyzskxnzkrgql.supabase.co/storage/v1/object/public/avatars/avatar_1757128089.jpg" alt="Sample 3" class="w-full h-48 object-cover rounded-2xl shadow-md">
+          <img src="https://mmhvljqdyzskxnzkrgql.supabase.co/storage/v1/object/public/avatars/avatar_1757127958.jpg" alt="Sample 4" class="w-full h-48 object-cover rounded-2xl shadow-md">
+          <img src="https://mmhvljqdyzskxnzkrgql.supabase.co/storage/v1/object/public/avatars/avatar_1756017013.jpg" alt="Sample 5" class="w-full h-48 object-cover rounded-2xl shadow-md">
+          <img src="https://mmhvljqdyzskxnzkrgql.supabase.co/storage/v1/object/public/avatars/avatar_1756906853.jpg" alt="Sample 6" class="w-full h-48 object-cover rounded-2xl shadow-md">
+          <img src="https://mmhvljqdyzskxnzkrgql.supabase.co/storage/v1/object/public/avatars/avatar_1756905333.jpg" alt="Sample 7" class="w-full h-48 object-cover rounded-2xl shadow-md">
+        </div>
+
+        <p class="mt-8 text-center text-slate-500 text-sm">
+          These are examples — your AI-generated images will be <span class="font-semibold">unique</span>.
+        </p>
+      </div>
+    </section>
+
+    <!-- Avatar Result Display -->
+    <section id="avatar-result-display" class="hidden text-center space-y-6 py-16">
+      <img id="avatar-img" src="" alt="Generated Avatar" class="w-80 h-80 rounded-xl shadow-2xl object-cover border-4 border-white mx-auto">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a id="downloadBtn" href="#" download class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 font-semibold">⬇ Download</a>
+        <button id="copyBtn" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-semibold">📋 Copy Link</button>
+      </div>
+      <p id="avatar-url" class="text-sm text-slate-500 break-all bg-slate-100 p-3 rounded-lg max-w-xl mx-auto"></p>
+    </section>
+
+  </main>
+
+  <footer class="bg-slate-800 text-slate-400 mt-16">
+    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-sm">
+      <p>&copy; 2025 ArtifyMe. All Rights Reserved.</p>
+      <p class="mt-2">Powered by AI, crafted for your creativity.</p>
     </div>
-  </section>
+  </footer>
 
-  <!-- ✅ Avatar Result Section -->
-  <section id="avatar-result-display" class="hidden text-center space-y-6 py-16">
-    <img id="avatar-img" src="" alt="Generated Avatar" class="w-80 h-80 rounded-xl shadow-2xl object-cover border-4 border-white mx-auto">
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-      <a id="downloadBtn" href="#" download class="flex items-center justify-center gap-2 bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors font-semibold">⬇ Download</a>
-      <button id="copyBtn" class="flex items-center justify-center gap-2 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors font-semibold">📋 Copy Link</button>
-    </div>
-    <p id="avatar-url" class="text-sm text-slate-500 break-all bg-slate-100 p-3 rounded-lg max-w-xl mx-auto"></p>
-  </section>
+  <script>
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
-</main>
-
-<footer class="bg-slate-800 text-slate-400 mt-16">
-  <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-sm">
-    <p>&copy; 2025 ArtifyMe. All Rights Reserved.</p>
-    <p class="mt-2">Powered by AI, crafted for your creativity.</p>
-  </div>
-</footer>
-
-<script>
-  // ✅ Mobile menu toggle
-  const menuBtn = document.getElementById('menu-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-  menuBtn.addEventListener('click', () => {
-    if (mobileMenu.classList.contains('hidden')) {
-      mobileMenu.classList.remove('hidden');
-      mobileNavLinks.forEach((link, i) => setTimeout(() => link.classList.add('show'), i * 150));
-    } else {
-      mobileNavLinks.forEach((link, i) => setTimeout(() => link.classList.remove('show'), i * 100));
-      setTimeout(() => mobileMenu.classList.add('hidden'), mobileNavLinks.length * 120 + 300);
-    }
-  });
-
-  // ✅ Form submit handler
-  document.getElementById('avatar-form').addEventListener('submit', async function(e){
-    e.preventDefault();
-    const prompt = this.prompt.value.trim();
-    if(!prompt) return;
-
-    const generateBtn = document.getElementById('generateBtn');
-    generateBtn.disabled = true;
-    generateBtn.innerHTML = 'Generating...';
-
-    try {
-      const response = await fetch('/api/generate-avatar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt })
-      });
-      const data = await response.json();
-      if(data.avatar_url){
-        const resultSection = document.getElementById('avatar-result-display');
-        const img = document.getElementById('avatar-img');
-        const urlEl = document.getElementById('avatar-url');
-        const downloadBtn = document.getElementById('downloadBtn');
-        img.src = data.avatar_url;
-        urlEl.textContent = data.avatar_url;
-        downloadBtn.href = data.avatar_url;
-        resultSection.classList.remove('hidden');
-        resultSection.scrollIntoView({ behavior: 'smooth' });
+    menuBtn.addEventListener('click', () => {
+      if (mobileMenu.classList.contains('hidden')) {
+        mobileMenu.classList.remove('hidden');
+        mobileNavLinks.forEach((link, i) => setTimeout(() => link.classList.add('show'), i * 150));
       } else {
-        alert('⚠️ Error generating image. Please wait a moment and try again.');
+        mobileNavLinks.forEach((link, i) => setTimeout(() => link.classList.remove('show'), i * 100));
+        setTimeout(() => mobileMenu.classList.add('hidden'), mobileNavLinks.length * 120 + 300);
       }
-    } catch(err){
-      console.error(err);
-      alert('❌ Unexpected error. Please check your connection and try again.');
-    } finally {
-      generateBtn.disabled = false;
-      generateBtn.innerHTML = 'Generate';
-    }
-  });
-
-  // ✅ Copy link
-  document.getElementById('copyBtn').addEventListener('click', function(){
-    const url = document.getElementById('avatar-url').textContent;
-    navigator.clipboard.writeText(url).then(() => {
-      alert('✅ Link copied to clipboard!');
-    }, () => {
-      alert('❌ Failed to copy the link.');
     });
-  });
-</script>
+
+    document.getElementById('avatar-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const prompt = this.prompt.value.trim();
+      if (!prompt) return;
+
+      const generateBtn = document.getElementById('generateBtn');
+      generateBtn.disabled = true;
+      generateBtn.textContent = 'Generating...';
+
+      try {
+        const res = await fetch('/api/generate-avatar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        if (data.avatar_url) {
+          document.getElementById('avatar-img').src = data.avatar_url;
+          document.getElementById('avatar-url').textContent = data.avatar_url;
+          document.getElementById('downloadBtn').href = data.avatar_url;
+          document.getElementById('avatar-result-display').classList.remove('hidden');
+          document.getElementById('avatar-result-display').scrollIntoView({ behavior: 'smooth' });
+        } else {
+          alert('⚠️ Error generating image. Please try again.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('❌ Unexpected error. Check your connection.');
+      } finally {
+        generateBtn.disabled = false;
+        generateBtn.textContent = 'Generate';
+      }
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', function() {
+      const url = document.getElementById('avatar-url').textContent;
+      navigator.clipboard.writeText(url).then(() => {
+        alert('✅ Link copied to clipboard!');
+      }, () => {
+        alert('❌ Copy failed.');
+      });
+    });
+  </script>
 
 </body>
 </html>

@@ -1,49 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🎉 AI Celebration & Photography Ideas</title>
+  <title>🎉 AI Celebration Ideas</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
   </style>
 </head>
+
 <body class="text-slate-800">
 
   <!-- Header -->
-  <header class="bg-white/80 backdrop-blur-md shadow sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
-      <h1 class="text-2xl font-extrabold text-pink-600">ArtifyMe</h1>
-      <nav class="hidden sm:flex space-x-6 text-slate-700 font-medium">
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center p-4">
+      <h1 class="text-3xl font-extrabold text-pink-600 mb-4 sm:mb-0">ArtifyMe</h1>
+      <nav class="flex flex-wrap justify-center gap-4 sm:gap-6 text-slate-700 font-medium">
         <a href="/" class="hover:text-indigo-600">Home</a>
         <a href="#celebration-ideas" class="hover:text-pink-600">Ideas</a>
-        <a href="#about" class="hover:text-pink-600">About</a>
+        <a href="#how-to-use" class="hover:text-indigo-600">How To Use</a>
+        <a href="#how-ai-helps" class="hover:text-indigo-600">How AI Helps</a>
+        <a href="#about" class="hover:text-indigo-600">About</a>
       </nav>
     </div>
   </header>
-<!-- Back Button -->
-<a href="/" 
-  class="mt-4 mb-6 inline-block bg-gray-200 text-slate-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-300 shadow">
-  ← Back to Home
-</a>
+
+  <!-- Back Button -->
+  <div class="max-w-7xl mx-auto px-4 mt-6">
+    <a href="/" class="inline-block bg-gray-200 text-slate-700 px-5 py-2 rounded-md shadow hover:bg-gray-300">
+      ← Back to Home
+    </a>
+  </div>
 
   <!-- Celebration Ideas Section -->
   <section id="celebration-ideas" class="py-20 bg-gradient-to-b from-pink-50 via-white to-indigo-50">
-    <div class="max-w-5xl mx-auto text-center px-4">
-      <h2 class="text-4xl sm:text-5xl font-extrabold mb-6 text-slate-900">
-        🎉 Celebration & Photography Ideas
-      </h2>
-      <p class="text-lg sm:text-xl text-slate-600 mb-10">
+    <div class="max-w-4xl mx-auto text-center px-4">
+      <h2 class="text-4xl font-extrabold mb-6 text-slate-900">🎉 Celebration & Photography Ideas</h2>
+      <p class="text-lg text-slate-600 mb-10">
         Let AI suggest creative <span class="text-pink-600 font-semibold">decorations</span>, 
         <span class="text-indigo-600 font-semibold">themes</span>, and 
         <span class="text-yellow-500 font-semibold">photography concepts</span> 
         for your special occasions.
       </p>
 
-      <!-- AI Form -->
-      <form id="celebration-form" class="grid gap-4 sm:grid-cols-3 max-w-3xl mx-auto">
+      <form id="celebration-form" class="grid gap-4 sm:grid-cols-3 max-w-2xl mx-auto mb-6">
         <select name="event" class="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 w-full">
           <option value="">Choose Event</option>
           <option>Birthday</option>
@@ -66,28 +69,78 @@
           class="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 w-full"/>
       </form>
 
-      <!-- CTA Button -->
       <button id="celebrationBtn" 
-        class="mt-6 bg-gradient-to-r from-pink-600 to-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:scale-105 shadow-lg transition-transform">
+        class="bg-gradient-to-r from-pink-600 to-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:scale-105 shadow transition-transform">
         🚀 Generate Ideas
       </button>
 
-      <!-- Results -->
-      <div id="celebration-results" class="mt-12 text-left max-w-3xl mx-auto space-y-6"></div>
+      <div id="celebration-results" class="mt-12 space-y-6"></div>
+    </div>
+  </section>
+
+  <!-- How To Use Section -->
+  <section id="how-to-use" class="py-20 bg-indigo-50 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h3 class="text-3xl font-bold mb-6 text-indigo-900">🛠️ How To Use ArtifyMe</h3>
+      <p class="text-lg text-slate-700 leading-relaxed">
+        ✅ Select event & style.<br>
+        ✅ Add extra details (optional).<br>
+        ✅ Click Generate Ideas.<br>
+        ✅ Get well-structured themes, decorations, and photography ideas in seconds.<br>
+        Effortlessly plan memorable celebrations.
+      </p>
+    </div>
+  </section>
+
+  <!-- How AI Helps Us Section -->
+  <section id="how-ai-helps" class="py-20 bg-white px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h3 class="text-3xl font-bold mb-6 text-indigo-900">🤖 How Our AI Helps You</h3>
+      <p class="text-lg text-slate-700 leading-relaxed">
+        ✅ Quickly brainstorm unique and creative event ideas.<br>
+        ✅ Save time searching online.<br>
+        ✅ Receive structured results automatically.<br>
+        Everything tailored to your inputs!
+      </p>
+    </div>
+  </section>
+
+  <!-- AI Failure Handling Section -->
+  <section id="ai-failure" class="py-16 bg-gradient-to-b from-indigo-100 to-white px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h4 class="text-2xl font-semibold text-red-600 mb-4">⚠️ AI Couldn’t Generate Ideas?</h4>
+      <p class="text-lg text-slate-700 leading-relaxed">
+        No worries! Just wait for 60 seconds and try again.<br>
+        Servers may be busy, and every retry generates something new. ✨
+      </p>
     </div>
   </section>
 
   <!-- About -->
   <section id="about" class="py-20 bg-white px-4">
-    <div class="max-w-4xl mx-auto text-center">
-      <h3 class="text-3xl sm:text-4xl font-bold mb-6 text-slate-900">About ArtifyMe</h3>
-      <p class="text-slate-600 text-lg leading-relaxed">
-        ArtifyMe uses advanced AI to bring your celebrations to life — from generating unique images 
-        to suggesting event themes and photography ideas. 
-        Let AI inspire your next <span class="text-pink-600 font-semibold">special moment</span> ✨
+    <div class="max-w-3xl mx-auto text-center">
+      <h3 class="text-3xl font-bold mb-6 text-slate-900">About ArtifyMe</h3>
+      <p class="text-lg text-slate-600 leading-relaxed">
+        ArtifyMe uses cutting-edge AI to assist with creative celebration planning.<br>
+        Generate unique images, event themes, and photography concepts with ease.<br>
+        Perfect for any special moment.
       </p>
     </div>
   </section>
+
+  <!-- Advertising / Contact Section -->
+<section class="bg-gradient-to-r from-green-400 to-green-600 text-white py-12 px-4 text-center rounded-xl mx-4 -mt-6 shadow-lg">
+  <h2 class="text-2xl sm:text-3xl font-bold mb-4">📣 Advertise With Us!</h2>
+  <p class="text-lg mb-6">Want to promote your products or services? Contact us directly via WhatsApp!</p>
+  <a href="https://wa.me/6383750156" target="_blank"
+     class="inline-flex items-center justify-center gap-3 bg-white text-green-600 px-6 py-3 rounded-lg font-semibold shadow-lg hover:scale-105 transform transition-all">
+    💬 Contact on WhatsApp
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15a2 2 0 01-2 2h-4l-3 3v-3H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v10z" />
+    </svg>
+  </a>
+  <p class="mt-4 text-sm">We will get back to you within 24 hours.</p>
+</section>
 
   <!-- Footer -->
   <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm">
@@ -122,12 +175,16 @@
 
       const container = document.getElementById("celebration-results");
       container.innerHTML = "";
-      if (data.ideas) {
+
+      if (data.ideas && data.ideas.length > 0) {
         data.ideas.forEach((idea, i) => {
           container.innerHTML += `
-            <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition duration-300">
-              <h4 class="font-bold text-lg mb-2 text-indigo-600">💡 Idea ${i+1}</h4>
-              <p class="text-slate-700 leading-relaxed">${idea}</p>
+            <div class="p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition duration-300">
+              <h4 class="font-bold text-lg text-indigo-600 mb-3">💡 Idea ${i + 1}</h4>
+              <p><strong>Theme:</strong> ${idea.theme}</p>
+              <p><strong>Decorations:</strong> ${idea.decorations}</p>
+              <p><strong>Photography:</strong> ${idea.photography}</p>
+              <p><strong>Extra:</strong> ${idea.extra}</p>
             </div>`;
         });
       } else {
@@ -135,5 +192,6 @@
       }
     });
   </script>
+
 </body>
 </html>
